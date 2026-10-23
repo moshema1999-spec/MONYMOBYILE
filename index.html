@@ -125,6 +125,22 @@ button.cell:active,.swcontent button.cell:active{background:var(--fill-press)}
 .barrow + .barrow::before{content:"";position:absolute;top:0;left:0;right:16px;height:.5px;background:var(--sep)}
 .barrow .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
 .barrow .pct{color:var(--label2);font-size:15px;margin-right:8px}
+.barrow .sub{font-size:13px;color:var(--label2)}
+button.barrow{width:100%;border:0;background:none;text-align:right;color:var(--label);font:inherit}
+button.barrow:active{background:var(--fill-press)}
+.cmprow{display:flex;flex-direction:column;gap:8px;padding:10px 16px 12px;position:relative}
+.cmprow + .cmprow::before{content:"";position:absolute;top:0;left:0;right:16px;height:.5px;background:var(--sep)}
+.cmprow .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cmprow .n{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cmprow .bars{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:6px 10px}
+.cmprow .bl{font-size:13px;color:var(--label2);white-space:nowrap}
+.cmprow .a{font-size:15px;text-align:left;min-width:72px}
+.fill.gray{background:var(--gray)}
+.delta{font-size:13px;font-weight:600;padding:3px 8px;border-radius:7px;background:var(--fill);white-space:nowrap;direction:rtl}
+.delta.good{color:var(--green-text)} .delta.bad{color:var(--red-text)} .delta.same{color:var(--label2)}
+.minisw{display:flex;align-items:center;gap:0;flex:none}
+.minisw .chev{width:36px;height:36px}
+.minisw span{min-width:96px;text-align:center;font-weight:600}
 .track{height:6px;border-radius:3px;background:var(--fill);overflow:hidden}
 .fill{height:100%;border-radius:3px;background:var(--red)}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
@@ -262,6 +278,12 @@ button.cell:active,.swcontent button.cell:active{background:var(--fill-press)}
       <span class="val" id="recCount"></span>
       <span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span>
     </button>
+    <button class="cell withicon" id="yearBtn">
+      <span class="sq b-gray"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+      <span class="grow"><span class="t1">סיכום שנתי</span></span>
+      <span class="val" id="yearBtnVal"></span>
+      <span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span>
+    </button>
   </div>
 
   <section class="sec">
@@ -371,6 +393,65 @@ button.cell:active,.swcontent button.cell:active{background:var(--fill-press)}
   </div></div>
 </div>
 
+<!-- annual summary sheet -->
+<div class="sheet" id="yearSheet" hidden role="dialog" aria-modal="true" aria-labelledby="yearTitle">
+  <div class="grabber"></div>
+  <div class="sheetnav gut"><button type="button" class="navtext" id="yearBack" style="visibility:hidden"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>חזרה</button><h3 id="yearTitle">סיכום שנתי</h3><button type="button" class="navtext trail" data-close>סיום</button></div>
+  <div class="sheetbody gut">
+    <div class="inner" id="yearMain">
+      <div class="monthsw">
+        <button class="chev" id="yPrev" aria-label="השנה הקודמת"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <span class="num" id="yLabel"></span>
+        <button class="chev" id="yNext" aria-label="השנה הבאה"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </div>
+      <div class="seg dense" id="ySeg"></div>
+      <div class="group"><div class="card balance" style="background:none">
+        <div class="cap" id="yTotLabel"></div>
+        <div class="big num" id="yTot">0.00</div>
+        <div class="cap" id="yAvg"></div>
+      </div></div>
+      <div class="sec">
+        <h2 class="sh">לפי קטגוריה</h2>
+        <div class="group" id="yCats"></div>
+        <p class="sf" id="yFoot">הקישו על קטגוריה כדי לראות כמה יצא בכל חודש.</p>
+      </div>
+    </div>
+    <div class="inner" id="yearCat" hidden>
+      <div class="group"><div class="card balance" style="background:none">
+        <div class="cap" id="ycLabel"></div>
+        <div class="big num" id="ycTot">0.00</div>
+        <div class="cap" id="ycAvg"></div>
+      </div></div>
+      <div class="sec">
+        <h2 class="sh">לפי חודשים</h2>
+        <div class="group" id="ycMonths"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- month comparison sheet -->
+<div class="sheet" id="cmpSheet" hidden role="dialog" aria-modal="true" aria-labelledby="cmpTitle">
+  <div class="grabber"></div>
+  <div class="sheetnav gut"><button type="button" class="navtext" id="cmpBack"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>הגדרות</button><h3 id="cmpTitle">השוואה בין חודשים</h3><button type="button" class="navtext trail" data-close>סיום</button></div>
+  <div class="sheetbody gut"><div class="inner">
+    <div class="group">
+      <div class="cell"><span class="grow"><span class="t1">חודש</span></span><span class="minisw"><button class="chev" id="cAprev" aria-label="חודש קודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><span id="cAlbl"></span><button class="chev" id="cAnext" aria-label="חודש הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button></span></div>
+      <div class="cell"><span class="grow"><span class="t1">מול</span></span><span class="minisw"><button class="chev" id="cBprev" aria-label="חודש קודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><span id="cBlbl"></span><button class="chev" id="cBnext" aria-label="חודש הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button></span></div>
+    </div>
+    <div class="seg dense" id="cSeg"></div>
+    <div class="sec">
+      <h2 class="sh">סה״כ</h2>
+      <div class="group" id="cTotal"></div>
+    </div>
+    <div class="sec" id="cCatSec">
+      <h2 class="sh">לפי קטגוריה</h2>
+      <div class="group" id="cCats"></div>
+      <p class="sf" id="cFoot"></p>
+    </div>
+  </div></div>
+</div>
+
 <!-- settings sheet -->
 <div class="sheet" id="settings" hidden role="dialog" aria-modal="true" aria-labelledby="setTitle">
   <div class="grabber"></div>
@@ -391,6 +472,13 @@ button.cell:active,.swcontent button.cell:active{background:var(--fill-press)}
         <button type="button" data-r="0.2">חומש 20%</button>
       </div>
       <p class="sf">חל על הכנסות חדשות. הכנסות שכבר נרשמו נשארות לפי האחוז שהיה כשנרשמו.</p>
+    </div>
+    <div class="sec">
+      <h2 class="sh">ניתוח</h2>
+      <div class="group">
+        <button type="button" class="cell withicon" id="cmpBtn"><span class="sq b-gray"><svg class="i" viewBox="0 0 24 24"><path d="M8 20V8M16 20V4M4 20h16"/></svg></span><span class="grow"><span class="t1">השוואה בין חודשים</span></span><span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span></button>
+      </div>
+      <p class="sf">משווה כל קטגוריה בין שני חודשים שתבחרו.</p>
     </div>
     <div class="sec">
       <h2 class="sh">ייצוא לאקסל</h2>
@@ -581,6 +669,7 @@ function render(){
   $("accTitle").textContent=isNow?"צבירה כוללת לפי קטגוריה":"צבירה עד סוף "+new Date(cur.y,cur.m,1).toLocaleDateString("he-IL",{month:"long",year:"numeric"});
 
   $("recCount").textContent=recs.length?String(recs.length):"";
+  $("yearBtnVal").textContent=String(cur.y);
 
   // expense categories
   const exps=items.filter(t=>t.kind==="exp");
@@ -645,8 +734,8 @@ function render(){
 }
 
 /* ---------- sheets ---------- */
-function openSheet(id){["sheet","recSheet","settings"].forEach(s=>$(s).hidden=s!==id);$("scrim").hidden=false;$("banner").hidden=true;document.body.style.overflow="hidden"}
-function closeSheets(){$("scrim").hidden=true;["sheet","recSheet","settings"].forEach(s=>$(s).hidden=true);document.body.style.overflow=""}
+function openSheet(id){["sheet","recSheet","settings","yearSheet","cmpSheet"].forEach(s=>$(s).hidden=s!==id);$("scrim").hidden=false;$("banner").hidden=true;document.body.style.overflow="hidden"}
+function closeSheets(){$("scrim").hidden=true;["sheet","recSheet","settings","yearSheet","cmpSheet"].forEach(s=>$(s).hidden=true);document.body.style.overflow=""}
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeSheets);
 $("scrim").onclick=closeSheets;
 document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!$("as").hidden)closeAS();else closeSheets()});
@@ -833,6 +922,128 @@ function renderRecs(){
 }
 $("recBtn").onclick=()=>{renderRecs();openSheet("recSheet")};
 $("recAdd").onclick=()=>openForm("new",null,{recurring:true});
+
+/* ---------- annual summary: totals per category for a year, and a category's month-by-month view ---------- */
+const KCOL={exp:"--red",inc:"--green",sav:"--teal",inv:"--indigo",maa:"--orange"};
+let yv={y:new Date().getFullYear(),kind:"exp",cat:null};
+const ySeg=$("ySeg");
+ORDER.forEach(k=>{const b=document.createElement("button");b.type="button";b.dataset.k=k;b.textContent=KINDS[k].plural;b.onclick=()=>{yv.kind=k;renderYear()};ySeg.appendChild(b)});
+/* months counted for the monthly average: all 12 for a past year, up to the current month for this year */
+const cntText=n=>n===1?"תנועה אחת":n+" תנועות";
+function yMonths(y){const n=new Date();return y<n.getFullYear()?12:y===n.getFullYear()?n.getMonth()+1:0}
+function barRow(name,v,max,total,sub,col,tag){
+  const el=document.createElement(tag||"div");el.className="barrow";if(tag==="button")el.type="button";
+  el.innerHTML='<div class="top"><span class="n"></span><span><span class="a num"></span><span class="pct num"></span></span></div><div class="track"><div class="fill"></div></div>'+(sub!=null?'<div class="sub"></div>':"");
+  el.querySelector(".n").textContent=name;el.querySelector(".a").textContent=money(v);
+  el.querySelector(".pct").textContent=total>0?Math.round(v/total*100)+"%":"";
+  const f=el.querySelector(".fill");f.style.width=(max>0?v/max*100:0)+"%";f.style.background="var("+col+")";
+  if(sub!=null)el.querySelector(".sub").textContent=sub;
+  return el;
+}
+function renderYear(){
+  const y=yv.y,k=yv.kind,n=yMonths(y);
+  setSeg(ySeg,"k",k);
+  $("yLabel").textContent=String(y);
+  $("yNext").disabled=y>=new Date().getFullYear();
+  const list=txs.filter(t=>t.kind===k&&t.date&&t.date.slice(0,4)===String(y));
+  const total=sum(list);
+  $("yTotLabel").textContent="סה״כ "+KINDS[k].plural+" ב־"+y;
+  $("yTot").textContent=money(total);
+  $("yAvg").textContent=n?"ממוצע לחודש "+money(total/n)+(n<12?" (לפי "+n+" חודשים)":""):"";
+  const by={};list.forEach(t=>{(by[t.cat]=by[t.cat]||{v:0,c:0});by[t.cat].v+=t.amount;by[t.cat].c++});
+  const rows=Object.entries(by).sort((a,b)=>b[1].v-a[1].v);
+  const box=$("yCats");box.innerHTML="";box.hidden=!rows.length;$("yFoot").hidden=!rows.length;
+  const max=rows.length?rows[0][1].v:0;
+  rows.forEach(([c,o])=>{
+    const el=barRow(c,o.v,max,total,(n?"ממוצע לחודש "+money(o.v/n)+" · ":"")+cntText(o.c),KCOL[k],"button");
+    el.setAttribute("aria-label",c+", "+money(o.v)+" ב־"+y+". לפירוט חודשי");
+    el.onclick=()=>{yv.cat=c;showYearCat()};
+    box.appendChild(el);
+  });
+  let e=$("yearMain").querySelector(".empty");if(e)e.remove();
+  if(!rows.length){e=document.createElement("div");e.className="empty";
+    e.innerHTML='<b>אין '+KINDS[k].plural+' ב־'+y+'</b><span>נסו שנה אחרת או סוג אחר.</span>';
+    $("yCats").parentNode.after(e)}
+}
+function showYearMain(){yv.cat=null;$("yearCat").hidden=true;$("yearMain").hidden=false;$("yearBack").style.visibility="hidden";$("yearTitle").textContent="סיכום שנתי";renderYear()}
+function showYearCat(){
+  const y=yv.y,k=yv.kind,c=yv.cat,n=yMonths(y);
+  $("yearMain").hidden=true;$("yearCat").hidden=false;$("yearBack").style.visibility="visible";$("yearTitle").textContent=c;
+  const list=txs.filter(t=>t.kind===k&&t.cat===c&&t.date&&t.date.slice(0,4)===String(y));
+  const total=sum(list);
+  $("ycLabel").textContent=c+" · "+KINDS[k].plural+" ב־"+y;
+  $("ycTot").textContent=money(total);
+  $("ycAvg").textContent=n?"ממוצע לחודש "+money(total/n)+(n<12?" (לפי "+n+" חודשים)":""):"";
+  const per=Array.from({length:12},(_,i)=>sum(list.filter(t=>+t.date.slice(5,7)===i+1)));
+  const max=Math.max(...per),box=$("ycMonths");box.innerHTML="";
+  per.forEach((v,i)=>{
+    const cnt=list.filter(t=>+t.date.slice(5,7)===i+1).length;
+    box.appendChild(barRow(new Date(y,i,1).toLocaleDateString("he-IL",{month:"long"}),v,max,total,cnt?cntText(cnt):null,KCOL[k]));
+  });
+  $("yearSheet").querySelector(".sheetbody").scrollTop=0;
+}
+$("yearBack").onclick=showYearMain;
+$("yPrev").onclick=()=>{yv.y--;renderYear()};
+$("yNext").onclick=()=>{if(yv.y<new Date().getFullYear()){yv.y++;renderYear()}};
+$("yearBtn").onclick=()=>{yv.y=cur.y;showYearMain();openSheet("yearSheet")};
+
+/* ---------- month comparison: each category in month A against month B ---------- */
+let cv={a:{y:0,m:0},b:{y:0,m:0},kind:"exp"};
+const cSeg=$("cSeg");
+ORDER.forEach(k=>{const b=document.createElement("button");b.type="button";b.dataset.k=k;b.textContent=KINDS[k].plural;b.onclick=()=>{cv.kind=k;renderCmp()};cSeg.appendChild(b)});
+const mkOf=o=>o.y+"-"+pad(o.m+1);
+const mLong=o=>new Date(o.y,o.m,1).toLocaleDateString("he-IL",{month:"long",year:"numeric"});
+const mShort=o=>new Date(o.y,o.m,1).toLocaleDateString("he-IL",{month:"short"});
+function shiftM(o,d){let m=o.m+d,y=o.y;while(m<0){m+=12;y--}while(m>11){m-=12;y++}return {y,m}}
+function isFuture(o){const n=new Date();return o.y>n.getFullYear()||(o.y===n.getFullYear()&&o.m>n.getMonth())}
+/* for expenses a rise is bad; for income, savings, investments and giving a rise is good */
+function deltaPill(a,b,kind){
+  const el=document.createElement("span");el.className="delta num";
+  const d=a-b;
+  if(Math.abs(d)<0.005){el.textContent="ללא שינוי";el.classList.add("same");return el}
+  const up=d>0,good=kind==="exp"?!up:up;
+  el.classList.add(good?"good":"bad");
+  el.textContent=(up?"▲ ":"▼ ")+money(Math.abs(d))+(b>0?" · "+Math.round(Math.abs(d)/b*100)+"%":"");
+  return el;
+}
+function cmpRow(name,a,b,max,kind){
+  const el=document.createElement("div");el.className="cmprow";
+  el.innerHTML='<div class="top"><span class="n"></span></div><div class="bars"><span class="bl"></span><div class="track"><div class="fill"></div></div><span class="a num"></span><span class="bl"></span><div class="track"><div class="fill gray"></div></div><span class="a num"></span></div>';
+  el.querySelector(".n").textContent=name;el.querySelector(".top").appendChild(deltaPill(a,b,kind));
+  const bl=el.querySelectorAll(".bl"),am=el.querySelectorAll(".a"),f=el.querySelectorAll(".fill");
+  bl[0].textContent=mShort(cv.a);bl[1].textContent=mShort(cv.b);
+  am[0].textContent=money(a);am[1].textContent=money(b);
+  f[0].style.width=(max>0?a/max*100:0)+"%";f[0].style.background="var("+KCOL[kind]+")";
+  f[1].style.width=(max>0?b/max*100:0)+"%";
+  return el;
+}
+function renderCmp(){
+  const k=cv.kind;setSeg(cSeg,"k",k);
+  $("cAlbl").textContent=mLong(cv.a);$("cBlbl").textContent=mLong(cv.b);
+  $("cAnext").disabled=isFuture(shiftM(cv.a,1));$("cBnext").disabled=isFuture(shiftM(cv.b,1));
+  const A=txs.filter(t=>t.kind===k&&t.date&&t.date.slice(0,7)===mkOf(cv.a)),B=txs.filter(t=>t.kind===k&&t.date&&t.date.slice(0,7)===mkOf(cv.b));
+  const ta=sum(A),tb=sum(B);
+  const tot=$("cTotal");tot.innerHTML="";tot.appendChild(cmpRow(KINDS[k].plural,ta,tb,Math.max(ta,tb),k));
+  const cats={};A.forEach(t=>{(cats[t.cat]=cats[t.cat]||[0,0])[0]+=t.amount});B.forEach(t=>{(cats[t.cat]=cats[t.cat]||[0,0])[1]+=t.amount});
+  const rows=Object.entries(cats).sort((x,y)=>Math.max(y[1][0],y[1][1])-Math.max(x[1][0],x[1][1]));
+  const max=rows.reduce((m,[,v])=>Math.max(m,v[0],v[1]),0);
+  const box=$("cCats");box.innerHTML="";
+  rows.forEach(([c,v])=>box.appendChild(cmpRow(c,v[0],v[1],max,k)));
+  $("cCatSec").hidden=!rows.length;
+  if(rows.length){
+    const ups=rows.filter(([,v])=>v[0]-v[1]>0.005).sort((x,y)=>(y[1][0]-y[1][1])-(x[1][0]-x[1][1]));
+    $("cFoot").textContent=ups.length?"העלייה הגדולה ביותר: "+ups[0][0]+" (+"+money(ups[0][1][0]-ups[0][1][1])+")":"אין קטגוריה שעלתה בין החודשים.";
+  }
+  let e=$("cmpSheet").querySelector(".empty");if(e)e.remove();
+  if(!rows.length){e=document.createElement("div");e.className="empty";
+    e.innerHTML="<b>אין "+KINDS[k].plural+" בשני החודשים</b><span>בחרו חודשים אחרים או סוג אחר.</span>";$("cCatSec").after(e)}
+}
+$("cAprev").onclick=()=>{cv.a=shiftM(cv.a,-1);renderCmp()};
+$("cAnext").onclick=()=>{if(!isFuture(shiftM(cv.a,1))){cv.a=shiftM(cv.a,1);renderCmp()}};
+$("cBprev").onclick=()=>{cv.b=shiftM(cv.b,-1);renderCmp()};
+$("cBnext").onclick=()=>{if(!isFuture(shiftM(cv.b,1))){cv.b=shiftM(cv.b,1);renderCmp()}};
+$("cmpBack").onclick=()=>$("settingsBtn").onclick();
+$("cmpBtn").onclick=()=>{cv.a={y:cur.y,m:cur.m};cv.b=shiftM(cv.a,-1);renderCmp();openSheet("cmpSheet");$("cmpSheet").querySelector(".sheetbody").scrollTop=0};
 $("maaAdd").onclick=()=>openForm("new",null,{kind:"maa"});
 
 /* ---------- settings ---------- */
