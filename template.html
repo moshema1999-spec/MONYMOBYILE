@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" id="themeColor" content="#F2F2F7">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="שם האפליקציה">
+<link rel="manifest" href="manifest.webmanifest">
+<title>שם האפליקציה</title>
+<script>
+/* apply the saved theme before first paint (index.html:15-18) */
+try{var t=localStorage.getItem("kis-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}
+</script>
+<!-- The original app inlines all CSS/JS in one index.html. Inline these three files the same way when shipping. -->
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="components.css">
+</head>
+<body>
+<!-- Every component below uses markup copied from index.html; the line of origin is noted in each comment. -->
+
+<!-- Nav bar (index.html:227-235): leading icon, title that appears on scroll, trailing icon -->
+<header class="nav gut">
+  <button class="navicon" id="settingsBtn" aria-label="הגדרות">
+    <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+  </button>
+  <span class="navtitle">שם האפליקציה</span>
+  <button class="navicon" id="plusBtn" aria-label="הוספה">
+    <svg class="i" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+</header>
+
+<main class="app gut">
+  <!-- Large title + switcher row (index.html:238-245) -->
+  <div class="head">
+    <h1 class="largetitle">שם האפליקציה</h1>
+    <div class="monthsw">
+      <button class="chev" aria-label="הקודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      <span>אוקטובר 2026</span>
+      <button class="chev" aria-label="הבא" disabled><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+    </div>
+  </div>
+
+  <!-- Hero number card (index.html:247-250) -->
+  <div class="card balance">
+    <div class="cap">כותרת המספר</div>
+    <div class="big num pos">1,234.50</div>
+  </div>
+
+  <!-- Tiles (index.html:252-259) -->
+  <div class="tiles">
+    <div class="tile"><span class="tl c-inc"><i class="b-inc"><svg class="i" viewBox="0 0 24 24"><path d="M17 7L7 17"/><path d="M15 17H7V9"/></svg></i>כותרת</span><span class="v num">12,000.00</span></div>
+    <div class="tile"><span class="tl c-sav"><i class="b-sav"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg></i>כותרת</span><span class="v num">1,000.00</span><span class="cp">כיתוב</span>
+      <div class="acc"><span>סה״כ</span><b class="num">3,000.00</b></div></div>
+  </div>
+
+  <!-- Grouped list with header and footer (index.html:276-284) -->
+  <section class="sec">
+    <h2 class="sh">כותרת קבוצה</h2>
+    <div class="group">
+      <button class="cell withicon" id="openSheetBtn"><span class="sq b-gray"><svg class="i" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg></span><span class="grow"><span class="t1">שורה שפותחת חלון</span></span><span class="val">2</span><span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span></button>
+      <div class="cell withicon"><span class="sq b-maa"><svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><span class="grow"><span class="t1">כותרת שורה</span><span class="t2">כיתוב משני</span></span><span class="val num strong">1,600.00</span></div>
+      <button class="cell tint" id="bannerBtn"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px"><path d="M12 5v14M5 12h14"/></svg>פעולה בכחול</button>
+    </div>
+    <p class="sf">טקסט הסבר מתחת לקבוצה.</p>
+  </section>
+
+  <!-- Progress-bar rows (index.html:639-645) -->
+  <section class="sec">
+    <h2 class="sh">פילוח</h2>
+    <div class="group">
+      <div class="barrow"><div class="top"><span class="n">פריט ראשון</span><span><span class="a num">4,500.00</span><span class="pct num">64%</span></span></div><div class="track"><div class="fill" style="width:100%"></div></div></div>
+      <div class="barrow"><div class="top"><span class="n">פריט שני</span><span><span class="a num">2,400.00</span><span class="pct num">34%</span></span></div><div class="track"><div class="fill" style="width:53%"></div></div></div>
+    </div>
+  </section>
+
+  <!-- Segmented filter + swipe-to-delete rows + empty state (index.html:301-312, 627-641, 615-619) -->
+  <section class="sec">
+    <div class="seg dense" id="filterSeg" role="group" aria-label="סינון">
+      <button data-f="all" aria-pressed="true">הכל</button>
+      <button data-f="a" aria-pressed="false">סוג א</button>
+      <button data-f="b" aria-pressed="false">סוג ב</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px;margin-top:10px">
+      <div class="sec">
+        <h3 class="sh" style="margin:0">יום שישי, 23 באוקטובר</h3>
+        <div class="group" id="swGroup">
+          <div class="swrow" style="--inset:58px"><button type="button" class="swdel">מחיקה</button><div class="swcontent"><button type="button" class="cell withicon"><span class="sq b-exp"><svg class="i" viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M9 7h8v8"/></svg></span><span class="grow"><span class="t1">פריט שאפשר להחליק</span><span class="t2">קטגוריה · פרט</span></span><span class="amt num">−86.40</span></button></div></div>
+          <div class="swrow" style="--inset:58px"><button type="button" class="swdel">מחיקה</button><div class="swcontent"><button type="button" class="cell withicon"><span class="sq b-inc"><svg class="i" viewBox="0 0 24 24"><path d="M17 7L7 17"/><path d="M15 17H7V9"/></svg></span><span class="grow"><span class="t1">פריט נוסף</span><span class="t2">קטגוריה</span></span><span class="amt num inc">+12,000.00</span></button></div></div>
+        </div>
+      </div>
+      <div class="empty"><svg class="i ei" viewBox="0 0 24 24" style="stroke-width:1.5"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><b>אין פריטים</b><span>הקישו על ״הוספה״ כדי להתחיל.</span></div>
+    </div>
+    <p class="hintline">החליקו שורה ימינה כדי למחוק · הקישו כדי לערוך</p>
+  </section>
+</main>
+
+<!-- Bottom toolbar with filled button (index.html:315) -->
+<div class="toolbar gut"><button class="filled" id="addBtn"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>הוספה</button></div>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<!-- Form sheet (index.html:320-368): nav with ביטול / title / שמירה, then grouped form rows -->
+<div class="sheet" id="formSheet" hidden role="dialog" aria-modal="true" aria-labelledby="formTitle">
+  <div class="grabber"></div>
+  <div class="sheetnav gut">
+    <button type="button" class="navtext" data-close>ביטול</button>
+    <h3 id="formTitle">פריט חדש</h3>
+    <button type="button" class="navtext trail" id="formSave">שמירה</button>
+  </div>
+  <div class="sheetbody gut">
+    <form class="inner" novalidate>
+      <div class="seg" id="typeSeg"><button type="button" data-k="a" aria-pressed="true">סוג א</button><button type="button" data-k="b" aria-pressed="false">סוג ב</button></div>
+      <div class="sec">
+        <div class="group"><div class="cell amountcell"><label for="amount">סכום</label><input id="amount" inputmode="decimal" placeholder="0.00" autocomplete="off"></div></div>
+        <p class="errline" id="err" hidden></p>
+      </div>
+      <div class="group">
+        <button type="button" class="cell"><span class="grow"><span class="t1">בחירה מרשימה</span></span><span class="val">ערך</span><span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span></button>
+        <div class="cell"><span class="grow"><span class="t1">כמות</span></span><span class="val num" id="qtyVal">3</span><span class="stepper" id="qtyStep"><button type="button" data-d="1" aria-label="הוספה">+</button><button type="button" data-d="-1" aria-label="הפחתה">−</button></span></div>
+        <div class="cell"><label for="noteIn" class="t1" style="flex:none">תיאור</label><input class="text" id="noteIn" maxlength="60" placeholder="לא חובה"></div>
+        <div class="cell"><label for="dateIn" class="grow"><span class="t1">תאריך</span></label><input class="datepill" id="dateIn" type="date"></div>
+      </div>
+      <div class="sec">
+        <div class="group"><div class="cell"><label for="sw1" class="grow"><span class="t1">מתג</span></label><input type="checkbox" class="switch" id="sw1" role="switch" checked></div></div>
+        <p class="sf">טקסט הסבר מתחת למתג.</p>
+      </div>
+      <div class="group"><button type="button" class="cell center destructive" id="delBtn">מחיקה</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Settings-style sheet (index.html:421-459) -->
+<div class="sheet" id="settings" hidden role="dialog" aria-modal="true" aria-labelledby="setTitle">
+  <div class="grabber"></div>
+  <div class="sheetnav gut"><span></span><h3 id="setTitle">הגדרות</h3><button type="button" class="navtext trail" data-close>סיום</button></div>
+  <div class="sheetbody gut"><div class="inner">
+    <div class="sec">
+      <h2 class="sh">מראה</h2>
+      <div class="seg" id="themeSeg">
+        <button type="button" data-t="auto">אוטומטי</button>
+        <button type="button" data-t="light">בהיר</button>
+        <button type="button" data-t="dark">כהה</button>
+      </div>
+    </div>
+    <div class="sec">
+      <h2 class="sh">פעולות</h2>
+      <div class="group">
+        <button type="button" class="cell tint">פעולה ראשונה</button>
+        <button type="button" class="cell tint">פעולה שנייה</button>
+      </div>
+      <p class="sf">הסבר על הפעולות.</p>
+    </div>
+  </div></div>
+</div>
+
+<!-- Action sheet (index.html:462-469) -->
+<div class="scrim2" id="scrim2" hidden></div>
+<div class="actionsheet" id="as" hidden role="alertdialog" aria-modal="true" aria-labelledby="asTitle">
+  <div class="asgroup">
+    <div class="astitle"><b id="asTitle"></b><span class="what" id="asWhat"></span><span id="asMsg"></span></div>
+    <div id="asBtns"></div>
+  </div>
+  <button type="button" class="ascancel" id="asCancel">ביטול</button>
+</div>
+
+<!-- Banner (index.html:471) -->
+<div class="banner" id="banner" hidden role="status"><span id="bannerText"></span><button type="button" id="bannerUndo">ביטול</button></div>
+
+<script src="components.js"></script>
+<script>
+/* Demo wiring only — shows how each component is driven */
+const K=window.Kit;
+K.$("settingsBtn").onclick=()=>K.openSheet("settings");
+K.$("plusBtn").onclick=K.$("addBtn").onclick=K.$("openSheetBtn").onclick=()=>{K.$("dateIn").value=K.todayStr();K.openSheet("formSheet")};
+K.$("bannerBtn").onclick=()=>K.banner("הפעולה בוצעה");
+document.querySelectorAll("#filterSeg button").forEach(b=>b.onclick=()=>K.setSeg(K.$("filterSeg"),"f",b.dataset.f));
+document.querySelectorAll("#typeSeg button").forEach(b=>b.onclick=()=>K.setSeg(K.$("typeSeg"),"k",b.dataset.k));
+let qty=3;K.stepper(K.$("qtyStep"),{min:2,max:36,get:()=>qty,set:v=>{qty=v;K.$("qtyVal").textContent=v}});
+document.querySelectorAll("#swGroup .swrow").forEach(row=>{K.attachSwipe(row);
+  row.querySelector(".swdel").onclick=()=>K.actionSheet({title:"למחוק את הפריט?",what:row.querySelector(".t1").textContent,
+    buttons:[{label:"מחיקה",destructive:true,fn:()=>{row.hidden=true;K.banner("הפריט נמחק",()=>{row.hidden=false;K.closeSw(row)})}}]})});
+K.$("delBtn").onclick=()=>K.actionSheet({title:"למחוק?",msg:"אפשר לבטל מיד אחרי המחיקה.",buttons:[{label:"מחיקה",destructive:true,fn:()=>{K.closeSheets();K.banner("נמחק",()=>{})}}]});
+K.$("formSave").onclick=()=>{const v=parseFloat(K.$("amount").value);
+  if(!(v>0)){const e=K.$("err");e.textContent="הזינו סכום גדול מאפס.";e.hidden=false;return}
+  K.closeSheets();K.banner("נשמר: "+K.money(v))};
+</script>
+</body>
+</html>
