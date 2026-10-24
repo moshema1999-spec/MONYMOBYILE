@@ -448,6 +448,7 @@ button.barrow:active{background:var(--fill-press)}
       <p class="sf" id="backupInfo"></p>
       <input type="file" id="restoreFile" accept=".json,application/json" hidden>
     </div>
+    <p class="hintline">גרסה 12</p>
   </section>
 </main>
 
@@ -1296,7 +1297,15 @@ document.addEventListener("visibilitychange",()=>{if(document.visibilityState===
 applyTheme(getTheme());
 genRecurring();
 render();onScroll();
-if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
+/* always check for a new version: skip the browser cache for sw.js, and reload once when a new version takes over */
+if("serviceWorker" in navigator){
+  let reloaded=false;
+  if(navigator.serviceWorker.controller)navigator.serviceWorker.addEventListener("controllerchange",()=>{if(!reloaded){reloaded=true;location.reload()}});
+  window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(reg=>{
+    reg.update().catch(()=>{});
+    document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")reg.update().catch(()=>{})});
+  }).catch(()=>{})});
+}
 })();
 </script>
 </body>
