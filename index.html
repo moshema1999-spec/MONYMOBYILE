@@ -17,7 +17,7 @@
 try{var t=localStorage.getItem("kis-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}
 </script>
 <style>
-/* Layout: iOS inset-grouped app — large title, month switcher, summary cards, grouped lists, bottom toolbar, modal sheets */
+/* Layout: iOS inset-grouped app — four tab views (large title, month switcher, cards, grouped lists), bottom tab bar with raised add button, modal sheets */
 :root{
   --bg:#F2F2F7; --cell:#FFFFFF; --sheet:#F2F2F7; --sheet-cell:#FFFFFF;
   --label:#000000; --label2:rgba(60,60,67,.6); --label3:rgba(60,60,67,.3);
@@ -69,7 +69,7 @@ html.scrolled .nav{background:var(--bar);-webkit-backdrop-filter:saturate(180%) 
 .navtitle{font-size:17px;font-weight:600;opacity:0;transition:opacity .2s}
 html.scrolled .navtitle{opacity:1}
 
-.app{max-width:600px;margin:0 auto;padding-block:0 120px;display:flex;flex-direction:column;gap:24px}
+.app{max-width:600px;margin:0 auto;padding-block:0 100px;display:flex;flex-direction:column;gap:24px}
 .largetitle{margin:2px 0 0;font-size:34px;font-weight:700;letter-spacing:.01em;line-height:1.15}
 .head{display:flex;flex-direction:column;gap:10px}
 .monthsw{display:flex;align-items:center;justify-content:space-between;background:var(--cell);border-radius:12px;height:44px;padding:0 4px}
@@ -92,6 +92,7 @@ html.scrolled .navtitle{opacity:1}
 .tile .cp{font-size:12px;color:var(--label2)}
 .tile .acc{margin-top:4px;padding-top:8px;border-top:.5px solid var(--sep);display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:13px;color:var(--label2)}
 .tile .acc b{font-size:15px;font-weight:700;color:var(--label)}
+.tile .acc.sub{border-top:0;margin-top:0;padding-top:0}
 .c-inc{color:var(--green)} .c-exp{color:var(--red)} .c-sav{color:var(--teal)} .c-inv{color:var(--indigo)} .c-maa{color:var(--orange)}
 .b-maa{background:var(--orange)} .b-inc{background:var(--green)} .b-exp{background:var(--red)} .b-sav{background:var(--teal)} .b-inv{background:var(--indigo)} .b-gray{background:var(--gray)}
 
@@ -141,6 +142,8 @@ button.barrow:active{background:var(--fill-press)}
 .minisw{display:flex;align-items:center;gap:0;flex:none}
 .minisw .chev{width:36px;height:36px}
 .minisw span{min-width:96px;text-align:center;font-weight:600}
+.seg.mini{width:160px;flex:none}
+.cell input.fx{max-width:110px;direction:ltr;text-align:left;font-family:var(--font-num)}
 .track{height:6px;border-radius:3px;background:var(--fill);overflow:hidden}
 .fill{height:100%;border-radius:3px;background:var(--red)}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
@@ -181,11 +184,24 @@ button.barrow:active{background:var(--fill-press)}
 .amountcell input::placeholder{color:var(--label3)}
 .datepill{border:0;border-radius:7px;background:var(--fill);color:var(--label);font:inherit;font-size:17px;padding:6px 10px;min-height:34px}
 
-/* bottom toolbar */
-.toolbar{position:fixed;left:0;right:0;bottom:0;z-index:6;padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:linear-gradient(to top,var(--bg) 55%,transparent);display:flex;justify-content:center}
-.filled{width:100%;max-width:568px;height:50px;border:0;border-radius:14px;background:var(--tint);color:#fff;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px}
-.filled:active{opacity:.75}
-.filled svg{width:20px;height:20px;stroke-width:2.6}
+/* tab views */
+.view,.part{display:flex;flex-direction:column;gap:24px}
+
+/* tab bar: five slots, raised add button in the middle, red badges */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:7;display:grid;grid-template-columns:repeat(5,1fr);align-items:start;padding-top:6px;padding-bottom:max(6px,env(safe-area-inset-bottom,0px));padding-left:max(4px,env(safe-area-inset-left,0px));padding-right:max(4px,env(safe-area-inset-right,0px));background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);box-shadow:0 -.5px 0 var(--sep)}
+.tabbar .tab{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--gray);padding:2px 0 0;min-height:48px}
+.tabbar .tab:active{opacity:.6}
+.tab .ti{position:relative;display:grid;place-items:center;height:27px}
+.tab .ti svg{width:26px;height:26px;stroke-width:1.8}
+.tab .tl{font-size:10px;font-weight:500;letter-spacing:.01em}
+.tab[aria-current="page"]{color:var(--tint)}
+.tab[aria-current="page"] .ti svg{stroke-width:2.4}
+.badge{position:absolute;top:-5px;right:calc(50% + 2px);min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--red);color:#fff;font-size:12px;font-weight:600;line-height:19px;text-align:center;box-shadow:0 0 0 2px var(--bg)}
+.badge.dot{min-width:10px;width:10px;height:10px;padding:0;top:-1px;right:calc(50% + 6px)}
+.tabplus{border:0;background:none;display:grid;place-items:center;height:48px;padding:0}
+.tabplus span{position:relative;width:52px;height:34px;border-radius:10px;background:var(--label);color:var(--bg);display:grid;place-items:center;box-shadow:4px 0 0 var(--green),-4px 0 0 var(--red);transition:transform .15s}
+.tabplus:active span{transform:scale(.92)}
+.tabplus svg{width:22px;height:22px;stroke-width:3}
 
 .empty{text-align:center;padding:36px 20px;color:var(--label2);display:flex;flex-direction:column;align-items:center;gap:6px}
 .empty .ei{width:52px;height:52px;color:var(--label3)}
@@ -238,94 +254,211 @@ button.barrow:active{background:var(--fill-press)}
 <body>
 
 <header class="nav gut">
-  <button class="navicon" id="settingsBtn" aria-label="הגדרות">
-    <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
-  </button>
+  <button type="button" class="navtext" id="navBack" style="visibility:hidden"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>ניתוח</button>
   <span class="navtitle" id="navTitle">הכיס החודשי</span>
-  <button class="navicon" id="plusBtn" aria-label="הוספת תנועה">
-    <svg class="i" viewBox="0 0 24 24" style="width:24px;height:24px"><path d="M12 5v14M5 12h14"/></svg>
-  </button>
+  <span></span>
 </header>
 
 <main class="app gut">
-  <div class="head">
-    <h1 class="largetitle" id="largeTitle">הכיס החודשי</h1>
-    <div class="monthsw">
-      <button class="chev" id="prev" aria-label="החודש הקודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-      <span id="monthTitle">החודש</span>
-      <button class="chev" id="next" aria-label="החודש הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+  <!-- tab: home -->
+  <section class="view" id="v-home">
+    <div class="head">
+      <h1 class="largetitle">הכיס החודשי</h1>
+      <div class="monthsw">
+        <button class="chev" id="prev" aria-label="החודש הקודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <span id="monthTitle">החודש</span>
+        <button class="chev" id="next" aria-label="החודש הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </div>
     </div>
-  </div>
 
-  <div class="card balance">
-    <div class="cap">יתרה פנויה החודש</div>
-    <div class="big num" id="bal">0.00</div>
-  </div>
+    <div class="card balance">
+      <div class="cap">יתרה פנויה החודש</div>
+      <div class="big num" id="bal">0.00</div>
+    </div>
 
-  <div class="tiles">
-    <div class="tile"><span class="tl c-inc"><i class="b-inc" data-ic="inc"></i>הכנסות</span><span class="v num" id="t-inc">0.00</span></div>
-    <div class="tile"><span class="tl c-exp"><i class="b-exp" data-ic="exp"></i>הוצאות</span><span class="v num" id="t-exp">0.00</span></div>
-    <div class="tile"><span class="tl c-sav"><i class="b-sav" data-ic="sav"></i>חיסכון</span><span class="v num" id="t-sav">0.00</span><span class="cp">הופרש החודש</span>
-      <div class="acc"><span>נצבר</span><b class="num" id="a-sav">0.00</b></div></div>
-    <div class="tile"><span class="tl c-inv"><i class="b-inv" data-ic="inv"></i>השקעות</span><span class="v num" id="t-inv">0.00</span><span class="cp">הופרש החודש</span>
-      <div class="acc"><span>נצבר</span><b class="num" id="a-inv">0.00</b></div></div>
-  </div>
+    <div class="tiles">
+      <div class="tile"><span class="tl c-inc"><i class="b-inc" data-ic="inc"></i>הכנסות</span><span class="v num" id="t-inc">0.00</span></div>
+      <div class="tile"><span class="tl c-exp"><i class="b-exp" data-ic="exp"></i>הוצאות</span><span class="v num" id="t-exp">0.00</span></div>
+      <div class="tile"><span class="tl c-sav"><i class="b-sav" data-ic="sav"></i>חיסכון</span><span class="v num" id="t-sav">0.00</span><span class="cp">הופרש החודש</span>
+        <div class="acc"><span>נצבר</span><b class="num" id="a-sav">0.00</b></div></div>
+      <div class="tile"><span class="tl c-inv"><i class="b-inv" data-ic="inv"></i>השקעות</span><span class="v num" id="t-inv">0.00</span><span class="cp">הופרש החודש</span>
+        <div class="acc"><span>נצבר</span><b class="num" id="a-inv">0.00</b></div>
+        <div class="acc sub" id="a-invUsdRow" hidden><span>בדולר</span><b class="num" id="a-invUsd">0.00</b></div></div>
+    </div>
 
-  <div class="group">
-    <button class="cell withicon" id="recBtn">
-      <span class="sq b-gray"><svg class="i" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg></span>
-      <span class="grow"><span class="t1">תנועות קבועות</span></span>
-      <span class="val" id="recCount"></span>
-      <span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span>
-    </button>
-    <button class="cell withicon" id="yearBtn">
-      <span class="sq b-gray"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
-      <span class="grow"><span class="t1">סיכום שנתי</span></span>
-      <span class="val" id="yearBtnVal"></span>
-      <span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span>
-    </button>
-  </div>
-
-  <section class="sec">
-    <h2 class="sh">מעשרות</h2>
     <div class="group">
-      <div class="cell withicon"><span class="sq b-maa" data-ic="maa"></span><span class="grow"><span class="t1">לתת החודש</span><span class="t2" id="m-dueSub">10% מההכנסות</span></span><span class="val num" id="m-due">0.00</span></div>
-      <div class="cell withicon"><span class="sq b-maa" data-ic="given"></span><span class="grow"><span class="t1">ניתן החודש</span></span><span class="val num" id="t-maa">0.00</span></div>
-      <div class="cell withicon"><span class="sq b-maa" data-ic="left"></span><span class="grow"><span class="t1" id="m-leftLabel">נותר לתת</span><span class="t2" id="m-leftSub">כולל חודשים קודמים</span></span><span class="val num strong" id="m-left">0.00</span></div>
-      <button class="cell tint" id="maaAdd"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px"><path d="M12 5v14M5 12h14"/></svg>רישום נתינה</button>
+      <button class="cell withicon" id="recBtn">
+        <span class="sq b-gray"><svg class="i" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg></span>
+        <span class="grow"><span class="t1">תנועות קבועות</span></span>
+        <span class="val" id="recCount"></span>
+        <span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span>
+      </button>
+    </div>
+
+    <section class="sec">
+      <h2 class="sh">מעשרות</h2>
+      <div class="group">
+        <div class="cell withicon"><span class="sq b-maa" data-ic="maa"></span><span class="grow"><span class="t1">לתת החודש</span><span class="t2" id="m-dueSub">10% מההכנסות</span></span><span class="val num" id="m-due">0.00</span></div>
+        <div class="cell withicon"><span class="sq b-maa" data-ic="given"></span><span class="grow"><span class="t1">ניתן החודש</span></span><span class="val num" id="t-maa">0.00</span></div>
+        <div class="cell withicon"><span class="sq b-maa" data-ic="left"></span><span class="grow"><span class="t1" id="m-leftLabel">נותר לתת</span><span class="t2" id="m-leftSub">כולל חודשים קודמים</span></span><span class="val num strong" id="m-left">0.00</span></div>
+        <button class="cell tint" id="maaAdd"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px"><path d="M12 5v14M5 12h14"/></svg>רישום נתינה</button>
+      </div>
+    </section>
+
+    <section class="sec" id="catSec" hidden>
+      <h2 class="sh">לאן הלכו ההוצאות</h2>
+      <div class="group" id="cats"></div>
+    </section>
+
+    <section class="sec" id="paySec" hidden>
+      <h2 class="sh">הוצאות לפי דרך תשלום</h2>
+      <div class="group" id="pays"></div>
+    </section>
+
+    <section class="sec" id="accSec" hidden>
+      <h2 class="sh" id="accTitle">צבירה כוללת לפי קטגוריה</h2>
+      <div class="group" id="accs"></div>
+    </section>
+  </section>
+
+  <!-- tab: transactions -->
+  <section class="view" id="v-list" hidden>
+    <div class="head">
+      <h1 class="largetitle">תנועות</h1>
+      <div class="monthsw">
+        <button class="chev" id="prev2" aria-label="החודש הקודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <span id="monthTitle2">החודש</span>
+        <button class="chev" id="next2" aria-label="החודש הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </div>
+    </div>
+    <section class="sec">
+      <div class="seg dense" id="filterSeg" role="group" aria-label="סינון">
+        <button data-f="all" aria-pressed="true">הכל</button>
+        <button data-f="exp" aria-pressed="false">הוצאות</button>
+        <button data-f="inc" aria-pressed="false">הכנסות</button>
+        <button data-f="sav" aria-pressed="false">חיסכון</button>
+        <button data-f="inv" aria-pressed="false">השקעות</button>
+        <button data-f="maa" aria-pressed="false">מעשרות</button>
+      </div>
+      <div id="list" style="display:flex;flex-direction:column;gap:7px;margin-top:10px"></div>
+      <p class="hintline" id="swipeHint" hidden>החליקו תנועה ימינה כדי למחוק · הקישו כדי לערוך</p>
+    </section>
+  </section>
+
+  <!-- tab: analysis -->
+  <section class="view" id="v-an" hidden>
+    <div class="head">
+      <h1 class="largetitle" id="anTitle">ניתוח</h1>
+      <div class="seg" id="anSeg">
+        <button type="button" data-a="year" aria-pressed="true">סיכום שנתי</button>
+        <button type="button" data-a="cmp" aria-pressed="false">השוואה בין חודשים</button>
+      </div>
+    </div>
+
+    <div class="part" id="yearMain">
+      <div class="monthsw">
+        <button class="chev" id="yPrev" aria-label="השנה הקודמת"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+        <span class="num" id="yLabel"></span>
+        <button class="chev" id="yNext" aria-label="השנה הבאה"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      </div>
+      <div class="seg dense" id="ySeg"></div>
+      <div class="card balance">
+        <div class="cap" id="yTotLabel"></div>
+        <div class="big num" id="yTot">0.00</div>
+        <div class="cap" id="yAvg"></div>
+      </div>
+      <div class="sec">
+        <h2 class="sh">לפי קטגוריה</h2>
+        <div class="group" id="yCats"></div>
+        <p class="sf" id="yFoot">הקישו על קטגוריה כדי לראות כמה יצא בכל חודש.</p>
+      </div>
+    </div>
+
+    <div class="part" id="yearCat" hidden>
+      <div class="card balance">
+        <div class="cap" id="ycLabel"></div>
+        <div class="big num" id="ycTot">0.00</div>
+        <div class="cap" id="ycAvg"></div>
+      </div>
+      <div class="sec">
+        <h2 class="sh">לפי חודשים</h2>
+        <div class="group" id="ycMonths"></div>
+      </div>
+    </div>
+
+    <div class="part" id="anCmp" hidden>
+      <div class="group">
+        <div class="cell"><span class="grow"><span class="t1">חודש</span></span><span class="minisw"><button class="chev" id="cAprev" aria-label="חודש קודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><span id="cAlbl"></span><button class="chev" id="cAnext" aria-label="חודש הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button></span></div>
+        <div class="cell"><span class="grow"><span class="t1">מול</span></span><span class="minisw"><button class="chev" id="cBprev" aria-label="חודש קודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><span id="cBlbl"></span><button class="chev" id="cBnext" aria-label="חודש הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button></span></div>
+      </div>
+      <div class="seg dense" id="cSeg"></div>
+      <div class="sec">
+        <h2 class="sh">סה״כ</h2>
+        <div class="group" id="cTotal"></div>
+      </div>
+      <div class="sec" id="cCatSec">
+        <h2 class="sh">לפי קטגוריה</h2>
+        <div class="group" id="cCats"></div>
+        <p class="sf" id="cFoot"></p>
+      </div>
     </div>
   </section>
 
-  <section class="sec" id="catSec" hidden>
-    <h2 class="sh">לאן הלכו ההוצאות</h2>
-    <div class="group" id="cats"></div>
-  </section>
-
-  <section class="sec" id="paySec" hidden>
-    <h2 class="sh">הוצאות לפי דרך תשלום</h2>
-    <div class="group" id="pays"></div>
-  </section>
-
-  <section class="sec" id="accSec" hidden>
-    <h2 class="sh" id="accTitle">צבירה כוללת לפי קטגוריה</h2>
-    <div class="group" id="accs"></div>
-  </section>
-
-  <section class="sec">
-    <div class="seg dense" id="filterSeg" role="group" aria-label="סינון">
-      <button data-f="all" aria-pressed="true">הכל</button>
-      <button data-f="exp" aria-pressed="false">הוצאות</button>
-      <button data-f="inc" aria-pressed="false">הכנסות</button>
-      <button data-f="sav" aria-pressed="false">חיסכון</button>
-      <button data-f="inv" aria-pressed="false">השקעות</button>
-      <button data-f="maa" aria-pressed="false">מעשרות</button>
+  <!-- tab: settings -->
+  <section class="view" id="v-set" hidden>
+    <div class="head"><h1 class="largetitle">הגדרות</h1></div>
+    <div class="sec">
+      <h2 class="sh">מראה</h2>
+      <div class="seg" id="themeSeg">
+        <button type="button" data-t="auto">אוטומטי</button>
+        <button type="button" data-t="light">בהיר</button>
+        <button type="button" data-t="dark">כהה</button>
+      </div>
     </div>
-    <div id="list" style="display:flex;flex-direction:column;gap:7px;margin-top:10px"></div>
-    <p class="hintline" id="swipeHint" hidden>החליקו תנועה ימינה כדי למחוק · הקישו כדי לערוך</p>
+    <div class="sec">
+      <h2 class="sh">מעשרות</h2>
+      <div class="seg" id="rateSeg">
+        <button type="button" data-r="0.1">מעשר 10%</button>
+        <button type="button" data-r="0.2">חומש 20%</button>
+      </div>
+      <p class="sf">חל על הכנסות חדשות. הכנסות שכבר נרשמו נשארות לפי האחוז שהיה כשנרשמו.</p>
+    </div>
+    <div class="sec">
+      <h2 class="sh">השקעות בדולר</h2>
+      <div class="seg" id="invCurSeg">
+        <button type="button" data-c="usd">הצגה בדולר</button>
+        <button type="button" data-c="ils">הצגה בשקלים</button>
+      </div>
+      <p class="sf">השקעה שנרשמה בדולר מומרת לשקלים לפי השער ביום הקנייה, וכל הסיכומים מחושבים בשקלים. הבחירה כאן קובעת איזה סכום יוצג ראשון ברשימת התנועות.</p>
+    </div>
+    <div class="sec">
+      <h2 class="sh">ייצוא לאקסל</h2>
+      <div class="group">
+        <button type="button" class="cell tint" id="xlsMonth">ייצוא החודש המוצג</button>
+        <button type="button" class="cell tint" id="xlsAll">ייצוא כל התנועות</button>
+      </div>
+      <p class="sf">קובץ Excel עם התנועות, סיכום חודשי, צבירה לפי קטגוריה ותנועות קבועות.</p>
+    </div>
+    <div class="sec">
+      <h2 class="sh">גיבוי ושחזור</h2>
+      <div class="group">
+        <button type="button" class="cell tint" id="backupBtn">שמירת גיבוי</button>
+        <button type="button" class="cell tint" id="restoreBtn">שחזור מגיבוי</button>
+      </div>
+      <p class="sf" id="backupInfo"></p>
+      <input type="file" id="restoreFile" accept=".json,application/json" hidden>
+    </div>
   </section>
 </main>
 
-<div class="toolbar gut"><button class="filled" id="addBtn"><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>הוספת תנועה</button></div>
+<!-- tab bar: home · transactions · add · analysis · settings (right to left) -->
+<nav class="tabbar" id="tabbar" aria-label="ניווט ראשי">
+  <button type="button" class="tab" data-v="home" aria-current="page"><span class="ti"><svg class="i" viewBox="0 0 24 24"><path d="M4 10.5L12 4l8 6.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1z"/></svg></span><span class="tl">בית</span></button>
+  <button type="button" class="tab" data-v="list"><span class="ti"><svg class="i" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span class="badge num" id="bList" hidden></span></span><span class="tl">תנועות</span></button>
+  <button type="button" class="tabplus" id="addBtn" aria-label="הוספת תנועה"><span><svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
+  <button type="button" class="tab" data-v="an"><span class="ti"><svg class="i" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span class="tl">ניתוח</span></button>
+  <button type="button" class="tab" data-v="set"><span class="ti"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span class="badge dot" id="bSet" hidden></span></span><span class="tl">הגדרות</span></button>
+</nav>
 
 <div class="scrim" id="scrim" hidden></div>
 
@@ -342,7 +475,10 @@ button.barrow:active{background:var(--fill-press)}
       <div class="seg dense" id="kindSeg"></div>
 
       <div class="sec">
-        <div class="group"><div class="cell amountcell"><label for="amount">סכום</label><input id="amount" inputmode="decimal" placeholder="0.00" autocomplete="off"></div></div>
+        <div class="group">
+          <div class="cell" id="curRow" hidden><span class="grow"><span class="t1">מטבע</span></span><div class="seg mini" id="curSeg"><button type="button" data-c="ils" aria-pressed="true">₪ שקל</button><button type="button" data-c="usd" aria-pressed="false">$ דולר</button></div></div>
+          <div class="cell amountcell"><label for="amount" id="amountLbl">סכום</label><input id="amount" inputmode="decimal" placeholder="0.00" autocomplete="off"></div>
+        </div>
         <p class="errline" id="err" hidden></p>
       </div>
 
@@ -352,6 +488,14 @@ button.barrow:active{background:var(--fill-press)}
         <div class="cell" id="instRow" hidden><span class="grow"><span class="t1">מספר תשלומים</span></span><span class="val num" id="instVal">3</span><span class="stepper" id="instStep"><button type="button" data-d="1" aria-label="עוד תשלום">+</button><button type="button" data-d="-1" aria-label="פחות תשלומים">−</button></span></div>
         <div class="cell"><label for="noteIn" class="t1" style="flex:none">תיאור</label><input class="text" id="noteIn" maxlength="60" placeholder="לא חובה"></div>
         <div class="cell" id="dateRow"><label for="dateIn" class="grow"><span class="t1">תאריך</span></label><input class="datepill" id="dateIn" type="date"></div>
+      </div>
+
+      <div class="sec" id="fxSec" hidden>
+        <div class="group">
+          <div class="cell"><label for="fxIn" class="grow"><span class="t1">שער הדולר</span><span class="t2" id="fxNote"></span></label><input class="text fx" id="fxIn" inputmode="decimal" placeholder="0.0000" autocomplete="off"></div>
+          <div class="cell"><span class="grow"><span class="t1">בשקלים</span></span><span class="val num" id="fxIls">—</span></div>
+        </div>
+        <p class="sf">השער נלקח לפי תאריך הקנייה (השער של הבנק המרכזי האירופי). אפשר להקליד במקומו את השער היציג של בנק ישראל.</p>
       </div>
 
       <div class="sec" id="maaSec" hidden>
@@ -393,113 +537,6 @@ button.barrow:active{background:var(--fill-press)}
   </div></div>
 </div>
 
-<!-- annual summary sheet -->
-<div class="sheet" id="yearSheet" hidden role="dialog" aria-modal="true" aria-labelledby="yearTitle">
-  <div class="grabber"></div>
-  <div class="sheetnav gut"><button type="button" class="navtext" id="yearBack" style="visibility:hidden"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>חזרה</button><h3 id="yearTitle">סיכום שנתי</h3><button type="button" class="navtext trail" data-close>סיום</button></div>
-  <div class="sheetbody gut">
-    <div class="inner" id="yearMain">
-      <div class="monthsw">
-        <button class="chev" id="yPrev" aria-label="השנה הקודמת"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-        <span class="num" id="yLabel"></span>
-        <button class="chev" id="yNext" aria-label="השנה הבאה"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
-      </div>
-      <div class="seg dense" id="ySeg"></div>
-      <div class="group"><div class="card balance" style="background:none">
-        <div class="cap" id="yTotLabel"></div>
-        <div class="big num" id="yTot">0.00</div>
-        <div class="cap" id="yAvg"></div>
-      </div></div>
-      <div class="sec">
-        <h2 class="sh">לפי קטגוריה</h2>
-        <div class="group" id="yCats"></div>
-        <p class="sf" id="yFoot">הקישו על קטגוריה כדי לראות כמה יצא בכל חודש.</p>
-      </div>
-    </div>
-    <div class="inner" id="yearCat" hidden>
-      <div class="group"><div class="card balance" style="background:none">
-        <div class="cap" id="ycLabel"></div>
-        <div class="big num" id="ycTot">0.00</div>
-        <div class="cap" id="ycAvg"></div>
-      </div></div>
-      <div class="sec">
-        <h2 class="sh">לפי חודשים</h2>
-        <div class="group" id="ycMonths"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- month comparison sheet -->
-<div class="sheet" id="cmpSheet" hidden role="dialog" aria-modal="true" aria-labelledby="cmpTitle">
-  <div class="grabber"></div>
-  <div class="sheetnav gut"><button type="button" class="navtext" id="cmpBack"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>הגדרות</button><h3 id="cmpTitle">השוואה בין חודשים</h3><button type="button" class="navtext trail" data-close>סיום</button></div>
-  <div class="sheetbody gut"><div class="inner">
-    <div class="group">
-      <div class="cell"><span class="grow"><span class="t1">חודש</span></span><span class="minisw"><button class="chev" id="cAprev" aria-label="חודש קודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><span id="cAlbl"></span><button class="chev" id="cAnext" aria-label="חודש הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button></span></div>
-      <div class="cell"><span class="grow"><span class="t1">מול</span></span><span class="minisw"><button class="chev" id="cBprev" aria-label="חודש קודם"><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button><span id="cBlbl"></span><button class="chev" id="cBnext" aria-label="חודש הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button></span></div>
-    </div>
-    <div class="seg dense" id="cSeg"></div>
-    <div class="sec">
-      <h2 class="sh">סה״כ</h2>
-      <div class="group" id="cTotal"></div>
-    </div>
-    <div class="sec" id="cCatSec">
-      <h2 class="sh">לפי קטגוריה</h2>
-      <div class="group" id="cCats"></div>
-      <p class="sf" id="cFoot"></p>
-    </div>
-  </div></div>
-</div>
-
-<!-- settings sheet -->
-<div class="sheet" id="settings" hidden role="dialog" aria-modal="true" aria-labelledby="setTitle">
-  <div class="grabber"></div>
-  <div class="sheetnav gut"><span></span><h3 id="setTitle">הגדרות</h3><button type="button" class="navtext trail" data-close>סיום</button></div>
-  <div class="sheetbody gut"><div class="inner">
-    <div class="sec">
-      <h2 class="sh">מראה</h2>
-      <div class="seg" id="themeSeg">
-        <button type="button" data-t="auto">אוטומטי</button>
-        <button type="button" data-t="light">בהיר</button>
-        <button type="button" data-t="dark">כהה</button>
-      </div>
-    </div>
-    <div class="sec">
-      <h2 class="sh">מעשרות</h2>
-      <div class="seg" id="rateSeg">
-        <button type="button" data-r="0.1">מעשר 10%</button>
-        <button type="button" data-r="0.2">חומש 20%</button>
-      </div>
-      <p class="sf">חל על הכנסות חדשות. הכנסות שכבר נרשמו נשארות לפי האחוז שהיה כשנרשמו.</p>
-    </div>
-    <div class="sec">
-      <h2 class="sh">ניתוח</h2>
-      <div class="group">
-        <button type="button" class="cell withicon" id="cmpBtn"><span class="sq b-gray"><svg class="i" viewBox="0 0 24 24"><path d="M8 20V8M16 20V4M4 20h16"/></svg></span><span class="grow"><span class="t1">השוואה בין חודשים</span></span><span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span></button>
-      </div>
-      <p class="sf">משווה כל קטגוריה בין שני חודשים שתבחרו.</p>
-    </div>
-    <div class="sec">
-      <h2 class="sh">ייצוא לאקסל</h2>
-      <div class="group">
-        <button type="button" class="cell tint" id="xlsMonth">ייצוא החודש המוצג</button>
-        <button type="button" class="cell tint" id="xlsAll">ייצוא כל התנועות</button>
-      </div>
-      <p class="sf">קובץ Excel עם התנועות, סיכום חודשי, צבירה לפי קטגוריה ותנועות קבועות.</p>
-    </div>
-    <div class="sec">
-      <h2 class="sh">גיבוי ושחזור</h2>
-      <div class="group">
-        <button type="button" class="cell tint" id="backupBtn">שמירת גיבוי</button>
-        <button type="button" class="cell tint" id="restoreBtn">שחזור מגיבוי</button>
-      </div>
-      <p class="sf" id="backupInfo"></p>
-      <input type="file" id="restoreFile" accept=".json,application/json" hidden>
-    </div>
-  </div></div>
-</div>
-
 <!-- action sheet -->
 <div class="scrim2" id="scrim2" hidden></div>
 <div class="actionsheet" id="as" hidden role="alertdialog" aria-modal="true" aria-labelledby="asTitle">
@@ -528,6 +565,8 @@ const rateOf=t=>t.mr===0.2?0.2:0.1;
 const rateName=x=>x===0.2?"חומש 20%":"מעשר 10%";
 const dueOf=list=>list.filter(t=>t.kind==="inc"&&!t.noMaaser).reduce((s,t)=>s+t.amount*rateOf(t),0);
 const PAYS={bit:"ביט",credit:"אשראי",cash:"מזומן",inst:"תשלומים"};
+/* investments can be entered in dollars: amount keeps the shekel value at the purchase-date rate, usd/fx keep the original */
+let invCur="usd";try{if(localStorage.getItem("kis-inv-cur")==="ils")invCur="ils"}catch(e){}
 const ICONS={
   exp:'<path d="M7 17L17 7"/><path d="M9 7h8v8"/>',
   inc:'<path d="M17 7L7 17"/><path d="M15 17H7V9"/>',
@@ -548,6 +587,8 @@ const todayStr=()=>{const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth
 const payText=t=>t.pay?(t.pay==="inst"?(t.inst||2)+" תשלומים":PAYS[t.pay]):"";
 const uid=()=>"t"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const dayLabel=d=>new Date(d+"T12:00:00").toLocaleDateString("he-IL",{day:"numeric",month:"long"});
+const usdText=v=>"$"+money(v);
+const parseNum=v=>parseFloat(String(v||"").replace(/[^\d.,]/g,"").replace(",","."));
 const lastDay=(y,m)=>new Date(y,m,0).getDate(); /* m is 1-12 */
 const CHEV='<span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span>';
 
@@ -558,7 +599,9 @@ let txs=load(LS), recs=load(LSR);
 function save(){try{localStorage.setItem(LS,JSON.stringify(txs));localStorage.setItem(LSR,JSON.stringify(recs));return true}catch(e){return false}}
 
 /* ---------- recurring: record each template once per month when its day arrives ---------- */
-function genRecurring(){
+/* ids of transactions recorded automatically and not yet seen in the transactions tab (badge) */
+let unseen=load("kis-unseen");
+function genRecurring(silent){
   const today=todayStr();const [ty,tm]=today.split("-").map(Number);let added=0;
   recs.forEach(r=>{
     let [y,m]=r.start.split("-").map(Number);
@@ -566,12 +609,14 @@ function genRecurring(){
       const mk=y+"-"+pad(m);
       const date=mk+"-"+pad(Math.min(r.day,lastDay(y,m)));
       if(date<=today&&!(r.skip||[]).includes(mk)&&!txs.some(t=>t.recId===r.id&&t.recMonth===mk)){
-        txs.push({id:uid(),kind:r.kind,amount:r.amount,cat:r.cat,pay:r.pay||null,inst:r.inst||null,note:r.note||"",noMaaser:r.noMaaser||undefined,mr:r.kind==="inc"&&rate===0.2?0.2:undefined,date,created:Date.now(),recId:r.id,recMonth:mk});added++;
+        const id=uid();
+        txs.push({id,kind:r.kind,amount:r.amount,cat:r.cat,pay:r.pay||null,inst:r.inst||null,note:r.note||"",noMaaser:r.noMaaser||undefined,mr:r.kind==="inc"&&rate===0.2?0.2:undefined,date,created:Date.now(),recId:r.id,recMonth:mk});added++;
+        if(!silent)unseen.push(id);
       }
       m++;if(m>12){m=1;y++}
     }
   });
-  if(added)save();
+  if(added){save();try{localStorage.setItem("kis-unseen",JSON.stringify(unseen))}catch(e){}}
   return added;
 }
 function nextRun(r){
@@ -634,9 +679,9 @@ document.addEventListener("pointerdown",e=>{if(openSw&&!openSw.contains(e.target
 function monthKey(){return cur.y+"-"+pad(cur.m+1)}
 function sum(list){return list.reduce((s,t)=>s+t.amount,0)}
 function render(){
-  $("monthTitle").textContent=new Date(cur.y,cur.m,1).toLocaleDateString("he-IL",{month:"long",year:"numeric"});
+  $("monthTitle").textContent=$("monthTitle2").textContent=new Date(cur.y,cur.m,1).toLocaleDateString("he-IL",{month:"long",year:"numeric"});
   const now=new Date();
-  $("next").disabled=(cur.y>now.getFullYear())||(cur.y===now.getFullYear()&&cur.m>=now.getMonth()+1);
+  $("next").disabled=$("next2").disabled=(cur.y>now.getFullYear())||(cur.y===now.getFullYear()&&cur.m>=now.getMonth()+1);
 
   const mk=monthKey();
   const items=txs.filter(t=>t.date&&t.date.slice(0,7)===mk);
@@ -651,17 +696,19 @@ function render(){
   // accumulated savings & investments up to the end of the shown month
   const upTo=txs.filter(t=>t.date&&t.date.slice(0,7)<=mk);
   ["sav","inv"].forEach(k=>$("a-"+k).textContent=money(sum(upTo.filter(t=>t.kind===k))));
+  const usdUp=upTo.filter(t=>t.kind==="inv"&&t.usd).reduce((s,t)=>s+t.usd,0);
+  $("a-invUsdRow").hidden=!usdUp;$("a-invUsd").textContent=usdText(usdUp);
   const left=dueOf(upTo)-sum(upTo.filter(t=>t.kind==="maa"));
   $("m-left").textContent=money(Math.abs(left));
   $("m-leftLabel").textContent=left<-0.004?"ניתן מעבר לנדרש":"נותר לתת";
   $("m-leftSub").textContent=mk===todayStr().slice(0,7)?"כולל חודשים קודמים":"עד סוף החודש, כולל קודמים";
   const accs=$("accs");accs.innerHTML="";let anyAcc=false;
   ["sav","inv"].forEach(k=>{
-    const by={};upTo.filter(t=>t.kind===k).forEach(t=>{by[t.cat]=(by[t.cat]||0)+t.amount});
+    const by={},byUsd={};upTo.filter(t=>t.kind===k).forEach(t=>{by[t.cat]=(by[t.cat]||0)+t.amount;if(t.usd)byUsd[t.cat]=(byUsd[t.cat]||0)+t.usd});
     Object.entries(by).sort((a,b)=>b[1]-a[1]).forEach(([c,v])=>{anyAcc=true;
       const el=document.createElement("div");el.className="cell";
       el.innerHTML='<span class="dot b-'+k+'"></span><span class="grow"><span class="t1"></span><span class="t2"></span></span><span class="amt num"></span>';
-      el.querySelector(".t1").textContent=c;el.querySelector(".t2").textContent=KINDS[k].plural;el.querySelector(".amt").textContent=money(v);
+      el.querySelector(".t1").textContent=c;el.querySelector(".t2").textContent=KINDS[k].plural+(byUsd[c]?" · מתוכם "+usdText(byUsd[c]):"");el.querySelector(".amt").textContent=money(v);
       accs.appendChild(el)});
   });
   $("accSec").hidden=!anyAcc;
@@ -669,7 +716,6 @@ function render(){
   $("accTitle").textContent=isNow?"צבירה כוללת לפי קטגוריה":"צבירה עד סוף "+new Date(cur.y,cur.m,1).toLocaleDateString("he-IL",{month:"long",year:"numeric"});
 
   $("recCount").textContent=recs.length?String(recs.length):"";
-  $("yearBtnVal").textContent=String(cur.y);
 
   // expense categories
   const exps=items.filter(t=>t.kind==="exp");
@@ -722,8 +768,9 @@ function render(){
       r.innerHTML='<span class="sq b-'+t.kind+'">'+icon(t.kind)+'</span><span class="grow"><span class="t1"></span><span class="t2"></span></span><span class="amt num"></span>';
       r.querySelector(".t1").textContent=t.note||t.cat;
       const isRec=t.recId&&recs.some(x=>x.id===t.recId);
+      if(t.usd){const fl=document.createElement("span");fl.className="t2 num-mixed";fl.textContent=(invCur==="usd"?money(t.amount)+" בשקלים":usdText(t.usd))+" · שער "+(+t.fx).toFixed(3);r.querySelector(".grow").appendChild(fl)}
       r.querySelector(".t2").textContent=[t.note?t.cat:KINDS[t.kind].label,payText(t),isRec?"קבועה":"",t.kind==="inc"&&!t.noMaaser?(rateOf(t)===0.2?"חומש ":"מעשר ")+money(t.amount*rateOf(t)):""].filter(Boolean).join(" · ");
-      const a=r.querySelector(".amt");a.textContent=KINDS[t.kind].sign+money(t.amount);if(t.kind==="inc")a.classList.add("inc");
+      const a=r.querySelector(".amt");a.textContent=t.usd&&invCur==="usd"?usdText(t.usd):KINDS[t.kind].sign+money(t.amount);if(t.kind==="inc")a.classList.add("inc");
       r.setAttribute("aria-label",KINDS[t.kind].label+", "+t.cat+", "+money(t.amount)+". לעריכה");
       r.onclick=()=>openForm("edit",t);
       c.appendChild(r);row.appendChild(del);row.appendChild(c);box.appendChild(row);
@@ -731,11 +778,13 @@ function render(){
     });
     sec.appendChild(head);sec.appendChild(box);list.appendChild(sec);
   });
+  updateBadges();
+  if(view==="an")renderAn();
 }
 
 /* ---------- sheets ---------- */
-function openSheet(id){["sheet","recSheet","settings","yearSheet","cmpSheet"].forEach(s=>$(s).hidden=s!==id);$("scrim").hidden=false;$("banner").hidden=true;document.body.style.overflow="hidden"}
-function closeSheets(){$("scrim").hidden=true;["sheet","recSheet","settings","yearSheet","cmpSheet"].forEach(s=>$(s).hidden=true);document.body.style.overflow=""}
+function openSheet(id){["sheet","recSheet"].forEach(s=>$(s).hidden=s!==id);$("scrim").hidden=false;$("banner").hidden=true;document.body.style.overflow="hidden"}
+function closeSheets(){$("scrim").hidden=true;["sheet","recSheet"].forEach(s=>$(s).hidden=true);document.body.style.overflow=""}
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeSheets);
 $("scrim").onclick=closeSheets;
 document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!$("as").hidden)closeAS();else closeSheets()});
@@ -792,15 +841,20 @@ function askStop(r){
 }
 
 /* ---------- add / edit form ---------- */
-let mode="new",editing=null,kind="exp",cat=null,pay=null,inst=3,recDay=1,formRate=0.1;
+let mode="new",editing=null,kind="exp",cat=null,pay=null,inst=3,recDay=1,formRate=0.1,fcur="ils",fxManual=false,fxDate=null,fxReq=0;
 const kindSeg=$("kindSeg");
 ORDER.forEach(k=>{const b=document.createElement("button");b.type="button";b.dataset.k=k;b.textContent=KINDS[k].label;b.onclick=()=>setKind(k);kindSeg.appendChild(b)});
-function setKind(k){kind=k;setSeg(kindSeg,"k",k);if(!KINDS[k].cats.includes(cat))cat=null;syncRows()}
+function setKind(k){kind=k;setSeg(kindSeg,"k",k);if(!KINDS[k].cats.includes(cat))cat=null;syncRows();if(k==="inv")autoRate()}
 function syncRows(){
   $("catVal").textContent=cat||"בחירה";$("catVal").style.color=cat?"":"var(--tint)";
   $("payVal").textContent=pay?PAYS[pay]:"ללא";
   $("instRow").hidden=pay!=="inst";$("instVal").textContent=inst;
   $("recDayVal").textContent=recDay;
+  const isUsd=kind==="inv"&&fcur==="usd";
+  $("curRow").hidden=kind!=="inv"||mode==="rec";setSeg($("curSeg"),"c",isUsd?"usd":"ils");
+  $("amountLbl").textContent=isUsd?"סכום בדולר":"סכום";
+  $("fxSec").hidden=!isUsd;$("recSec").hidden=isUsd;
+  if(isUsd){const u=parseNum($("amount").value),f=parseNum($("fxIn").value);$("fxIls").textContent=u>0&&f>0?money(u*f):"—"}
   $("maaSec").hidden=kind!=="inc";
   const a=parseFloat(($("amount").value||"").replace(/[^\d.,]/g,"").replace(",","."));
   $("maaLabel").textContent=rateName(formRate);
@@ -813,7 +867,30 @@ function syncRows(){
 $("instStep").onclick=e=>{const d=+(e.target.closest("button")||{}).dataset?.d;if(!d)return;inst=Math.max(2,Math.min(36,inst+d));syncRows()};
 $("recStep").onclick=e=>{const d=+(e.target.closest("button")||{}).dataset?.d;if(!d)return;recDay=Math.max(1,Math.min(31,recDay+d));syncRows()};
 $("maaToggle").onchange=()=>syncRows();
-$("amount").addEventListener("input",()=>{if(kind==="inc")syncRows()});
+$("amount").addEventListener("input",()=>{if(kind==="inc"||kind==="inv")syncRows()});
+
+/* ---------- dollar rate for the purchase date (Frankfurter / ECB, cached on the device) ---------- */
+let fxCache={};try{fxCache=JSON.parse(localStorage.getItem("kis-fx")||"{}")||{}}catch(e){fxCache={}}
+async function getRate(date){
+  if(fxCache[date])return fxCache[date];
+  const res=await fetch("https://api.frankfurter.dev/v1/"+date+"?base=USD&symbols=ILS");
+  if(!res.ok)throw new Error("rate "+res.status);
+  const j=await res.json();const v=j&&j.rates&&+j.rates.ILS;
+  if(!(v>0))throw new Error("no rate");
+  const o={rate:v,date:j.date||date};
+  if(date<todayStr()){fxCache[date]=o;try{localStorage.setItem("kis-fx",JSON.stringify(fxCache))}catch(e){}}
+  return o;
+}
+function autoRate(){
+  if(!(kind==="inv"&&fcur==="usd")||fxManual)return;
+  const d=$("dateIn").value||todayStr(),id=++fxReq;
+  $("fxNote").textContent="מחפש שער…";
+  getRate(d).then(o=>{if(id!==fxReq||fxManual)return;$("fxIn").value=o.rate.toFixed(4);fxDate=o.date;$("fxNote").textContent="שער מ־"+dayLabel(o.date);syncRows()})
+    .catch(()=>{if(id!==fxReq)return;$("fxNote").textContent="לא הצלחנו להביא שער. הקלידו אותו ידנית."});
+}
+document.querySelectorAll("#curSeg button").forEach(b=>b.onclick=()=>{fcur=b.dataset.c;syncRows();autoRate()});
+$("fxIn").addEventListener("input",()=>{fxManual=true;fxDate=null;fxReq++;$("fxNote").textContent="שער שהוזן ידנית";syncRows()});
+$("dateIn").addEventListener("change",()=>{if(kind==="inv"&&fcur==="usd"&&!fxManual)autoRate()});
 $("recToggle").onchange=()=>{if($("recToggle").checked)recDay=+($("dateIn").value||todayStr()).slice(8,10);syncRows()};
 
 /* sheet nav buttons change between the form and a picker page */
@@ -849,11 +926,14 @@ function openForm(m,obj,opts){
   const isInstance=m==="edit"&&t.recId&&recs.some(r=>r.id===t.recId);
   formTitle=m==="rec"?"תנועה קבועה":m==="edit"?"עריכת תנועה":(opts&&opts.recurring?"תנועה קבועה חדשה":"תנועה חדשה");
   cat=t.cat||null;pay=t.pay||null;inst=t.inst||3;
+  fcur=t.usd?"usd":"ils";fxReq++;fxDate=t.fxDate||null;fxManual=!!(t.usd&&!t.fxDate);
+  $("fxIn").value=t.fx?String(t.fx):"";
+  $("fxNote").textContent=t.usd?(t.fxDate?"שער מ־"+dayLabel(t.fxDate):"שער שהוזן ידנית"):"";
+  $("dateIn").value=m==="edit"?t.date:todayStr();
+  $("amount").value=obj?String(t.usd||t.amount):"";
   setKind(t.kind||(opts&&opts.kind)||(filter!=="all"?filter:"exp"));
-  $("amount").value=obj?String(t.amount):"";
   $("maaToggle").checked=!t.noMaaser;
   $("noteIn").value=t.note||"";
-  $("dateIn").value=m==="edit"?t.date:todayStr();
   $("dateRow").hidden=m==="rec";
   $("recToggle").checked=!!(opts&&opts.recurring);
   $("recToggleRow").hidden=m==="rec"||isInstance;
@@ -871,7 +951,6 @@ function openForm(m,obj,opts){
 }
 $("recLink").onclick=()=>{const r=recs.find(x=>x.id===editing.recId);if(r)openForm("rec",r)};
 $("addBtn").onclick=()=>openForm("new");
-$("plusBtn").onclick=()=>openForm("new");
 $("delBtn").onclick=()=>{if(mode==="rec")askStop(editing);else if(mode==="edit")askDelete(editing)};
 function showErr(m){const e=$("err");e.textContent=m;e.hidden=false;$("sheet").querySelector(".sheetbody").scrollTop=0}
 $("formMain").addEventListener("submit",e=>{e.preventDefault();submitForm()});
@@ -880,9 +959,13 @@ function submitForm(){
   const amt=parseFloat(($("amount").value||"").replace(/[^\d.,]/g,"").replace(",","."));
   if(!(amt>0)){showErr("הזינו סכום גדול מאפס.");return}
   if(!cat){showErr("בחרו קטגוריה.");return}
-  const wantsRec=mode==="rec"||(!$("recToggleRow").hidden&&$("recToggle").checked);
+  const isUsd=kind==="inv"&&fcur==="usd"&&mode!=="rec";
+  const fx=isUsd?parseNum($("fxIn").value):null;
+  if(isUsd&&!(fx>0)){showErr("הזינו את שער הדולר.");return}
+  const wantsRec=!isUsd&&(mode==="rec"||(!$("recToggleRow").hidden&&$("recToggle").checked));
   const day=wantsRec?recDay:null;
-  const fields={kind,amount:Math.round(amt*100)/100,cat,pay:pay||null,inst:pay==="inst"?inst:null,note:$("noteIn").value.trim(),noMaaser:kind==="inc"&&!$("maaToggle").checked?true:undefined,mr:kind==="inc"&&formRate===0.2?0.2:undefined};
+  const fields={kind,amount:Math.round((isUsd?amt*fx:amt)*100)/100,cat,pay:pay||null,inst:pay==="inst"?inst:null,note:$("noteIn").value.trim(),noMaaser:kind==="inc"&&!$("maaToggle").checked?true:undefined,mr:kind==="inc"&&formRate===0.2?0.2:undefined,
+    usd:isUsd?Math.round(amt*100)/100:undefined,fx:isUsd?fx:undefined,fxDate:isUsd&&!fxManual?fxDate:undefined};
 
   if(mode==="rec"){
     Object.assign(editing,fields,{day});
@@ -898,7 +981,7 @@ function submitForm(){
     recs.push(r);tx.recId=r.id;tx.recMonth=date.slice(0,7);
   }
   if(!save()){showErr("השמירה לא הצליחה. ייתכן שהזיכרון בטלפון מלא.");return}
-  genRecurring();
+  genRecurring(true);
   const [y,m]=date.split("-").map(Number);cur={y,m:m-1};
   closeSheets();render();
   if(wantsRec)banner("תירשם לבד כל חודש ב־"+day);
@@ -965,10 +1048,11 @@ function renderYear(){
     e.innerHTML='<b>אין '+KINDS[k].plural+' ב־'+y+'</b><span>נסו שנה אחרת או סוג אחר.</span>';
     $("yCats").parentNode.after(e)}
 }
-function showYearMain(){yv.cat=null;$("yearCat").hidden=true;$("yearMain").hidden=false;$("yearBack").style.visibility="hidden";$("yearTitle").textContent="סיכום שנתי";renderYear()}
+function showYearMain(){yv.cat=null;renderAn()}
 function showYearCat(){
   const y=yv.y,k=yv.kind,c=yv.cat,n=yMonths(y);
-  $("yearMain").hidden=true;$("yearCat").hidden=false;$("yearBack").style.visibility="visible";$("yearTitle").textContent=c;
+  $("yearMain").hidden=true;$("yearCat").hidden=false;$("anCmp").hidden=true;$("anSeg").hidden=true;
+  $("navBack").style.visibility="visible";$("anTitle").textContent=c;$("navTitle").textContent=c;
   const list=txs.filter(t=>t.kind===k&&t.cat===c&&t.date&&t.date.slice(0,4)===String(y));
   const total=sum(list);
   $("ycLabel").textContent=c+" · "+KINDS[k].plural+" ב־"+y;
@@ -980,12 +1064,10 @@ function showYearCat(){
     const cnt=list.filter(t=>+t.date.slice(5,7)===i+1).length;
     box.appendChild(barRow(new Date(y,i,1).toLocaleDateString("he-IL",{month:"long"}),v,max,total,cnt?cntText(cnt):null,KCOL[k]));
   });
-  $("yearSheet").querySelector(".sheetbody").scrollTop=0;
 }
-$("yearBack").onclick=showYearMain;
+$("navBack").onclick=()=>{showYearMain();window.scrollTo(0,0)};
 $("yPrev").onclick=()=>{yv.y--;renderYear()};
 $("yNext").onclick=()=>{if(yv.y<new Date().getFullYear()){yv.y++;renderYear()}};
-$("yearBtn").onclick=()=>{yv.y=cur.y;showYearMain();openSheet("yearSheet")};
 
 /* ---------- month comparison: each category in month A against month B ---------- */
 let cv={a:{y:0,m:0},b:{y:0,m:0},kind:"exp"};
@@ -1034,7 +1116,7 @@ function renderCmp(){
     const ups=rows.filter(([,v])=>v[0]-v[1]>0.005).sort((x,y)=>(y[1][0]-y[1][1])-(x[1][0]-x[1][1]));
     $("cFoot").textContent=ups.length?"העלייה הגדולה ביותר: "+ups[0][0]+" (+"+money(ups[0][1][0]-ups[0][1][1])+")":"אין קטגוריה שעלתה בין החודשים.";
   }
-  let e=$("cmpSheet").querySelector(".empty");if(e)e.remove();
+  let e=$("anCmp").querySelector(".empty");if(e)e.remove();
   if(!rows.length){e=document.createElement("div");e.className="empty";
     e.innerHTML="<b>אין "+KINDS[k].plural+" בשני החודשים</b><span>בחרו חודשים אחרים או סוג אחר.</span>";$("cCatSec").after(e)}
 }
@@ -1042,17 +1124,50 @@ $("cAprev").onclick=()=>{cv.a=shiftM(cv.a,-1);renderCmp()};
 $("cAnext").onclick=()=>{if(!isFuture(shiftM(cv.a,1))){cv.a=shiftM(cv.a,1);renderCmp()}};
 $("cBprev").onclick=()=>{cv.b=shiftM(cv.b,-1);renderCmp()};
 $("cBnext").onclick=()=>{if(!isFuture(shiftM(cv.b,1))){cv.b=shiftM(cv.b,1);renderCmp()}};
-$("cmpBack").onclick=()=>$("settingsBtn").onclick();
-$("cmpBtn").onclick=()=>{cv.a={y:cur.y,m:cur.m};cv.b=shiftM(cv.a,-1);renderCmp();openSheet("cmpSheet");$("cmpSheet").querySelector(".sheetbody").scrollTop=0};
+
+/* ---------- analysis tab: annual summary or month comparison ---------- */
+let anMode="year";
+document.querySelectorAll("#anSeg button").forEach(b=>b.onclick=()=>{anMode=b.dataset.a;yv.cat=null;renderAn()});
+function renderAn(){
+  setSeg($("anSeg"),"a",anMode);
+  if(anMode==="year"&&yv.cat){showYearCat();return}
+  $("anSeg").hidden=false;$("anTitle").textContent="ניתוח";$("navTitle").textContent="ניתוח";$("navBack").style.visibility="hidden";
+  $("yearCat").hidden=true;$("yearMain").hidden=anMode!=="year";$("anCmp").hidden=anMode!=="cmp";
+  if(anMode==="year")renderYear();else{if(!cv.a.y){cv.a={y:cur.y,m:cur.m};cv.b=shiftM(cv.a,-1)}renderCmp()}
+}
+
+/* ---------- tab bar ---------- */
+const VIEWS={home:"הכיס החודשי",list:"תנועות",an:"ניתוח",set:"הגדרות"};
+let view="home";
+function showView(v){
+  view=v;
+  Object.keys(VIEWS).forEach(k=>$("v-"+k).hidden=k!==v);
+  document.querySelectorAll(".tabbar .tab").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+  $("navTitle").textContent=VIEWS[v];$("navBack").style.visibility="hidden";
+  closeSw(openSw);window.scrollTo(0,0);onScroll();
+  if(v==="list"&&unseen.length){unseen=[];try{localStorage.setItem("kis-unseen","[]")}catch(e){}}
+  if(v==="an"){if(!yv.cat)yv.y=cur.y;renderAn()}
+  if(v==="set")refreshSettings();
+  updateBadges();
+}
+/* tapping the current tab again returns it to its top level */
+document.querySelectorAll(".tabbar .tab").forEach(b=>b.onclick=()=>{if(b.dataset.v===view&&view==="an")yv.cat=null;showView(b.dataset.v)});
+function backupStale(){let last=0;try{last=+localStorage.getItem("kis-last-backup")||0}catch(e){}return txs.length>0&&Date.now()-last>30*864e5}
+function updateBadges(){
+  const ids=new Set(txs.map(t=>t.id));const n=unseen.filter(id=>ids.has(id)).length;
+  const bl=$("bList");bl.hidden=!n;bl.textContent=n>99?"99+":String(n);
+  $("bSet").hidden=!backupStale();
+}
 $("maaAdd").onclick=()=>openForm("new",null,{kind:"maa"});
 
 /* ---------- settings ---------- */
 function setRate(x){rate=x===0.2?0.2:0.1;try{localStorage.setItem("kis-maaser-rate",String(rate))}catch(e){}setSeg($("rateSeg"),"r",String(rate));render()}
 document.querySelectorAll("#rateSeg button").forEach(b=>b.onclick=()=>{const x=+b.dataset.r;if(x!==rate){setRate(x);banner(x===0.2?"מעכשיו: חומש 20%":"מעכשיו: מעשר 10%")}});
-$("settingsBtn").onclick=()=>{applyTheme(getTheme());setSeg($("rateSeg"),"r",String(rate));
+function refreshSettings(){applyTheme(getTheme());setSeg($("rateSeg"),"r",String(rate));setSeg($("invCurSeg"),"c",invCur);
   let last=null;try{last=localStorage.getItem("kis-last-backup")}catch(e){}
-  $("backupInfo").textContent=last?"גיבוי אחרון: "+new Date(+last).toLocaleDateString("he-IL")+". מומלץ לגבות פעם בחודש ולשמור בקבצים או ב־iCloud.":"עוד לא נשמר גיבוי. שמרו קובץ גיבוי בקבצים או ב־iCloud, ותוכלו לשחזר ממנו בכל טלפון.";
-  openSheet("settings")};
+  $("backupInfo").textContent=(last?"גיבוי אחרון: "+new Date(+last).toLocaleDateString("he-IL")+". "+(backupStale()?"עברו יותר מ־30 יום, כדאי לגבות שוב. ":""):"עוד לא נשמר גיבוי. ")+"שמרו את הקובץ בקבצים או ב־iCloud, ותוכלו לשחזר ממנו בכל טלפון.";
+}
+document.querySelectorAll("#invCurSeg button").forEach(b=>b.onclick=()=>{invCur=b.dataset.c;try{localStorage.setItem("kis-inv-cur",invCur)}catch(e){}setSeg($("invCurSeg"),"c",invCur);render()});
 
 async function deliver(blob,name){
   const file=new File([blob],name,{type:blob.type});
@@ -1067,7 +1182,7 @@ $("backupBtn").onclick=async()=>{
   const data={app:"kis",version:3,exported:new Date().toISOString(),rate,txs,recs};
   const r=await deliver(new Blob([JSON.stringify(data,null,1)],{type:"application/json"}),"kis-backup-"+todayStr()+".json");
   if(r==="ok"){try{localStorage.setItem("kis-last-backup",String(Date.now()))}catch(e){}
-    $("backupInfo").textContent="גיבוי אחרון: "+new Date().toLocaleDateString("he-IL")+". מומלץ לגבות פעם בחודש ולשמור בקבצים או ב־iCloud.";
+    refreshSettings();updateBadges();
     banner("הגיבוי מוכן: "+txs.length+" תנועות")}
 };
 
@@ -1080,7 +1195,7 @@ $("restoreFile").onchange=async e=>{
     if(!Array.isArray(list))throw 0;
     const okTx=t=>t&&KINDS[t.kind]&&typeof t.amount==="number"&&t.amount>0&&t.cat;
     const clean=list.filter(t=>okTx(t)&&/^\d{4}-\d{2}-\d{2}$/.test(t.date)).map(t=>{
-      const o={id:String(t.id||uid()),kind:t.kind,amount:t.amount,cat:String(t.cat),pay:PAYS[t.pay]?t.pay:null,inst:t.pay==="inst"?(+t.inst||2):null,note:String(t.note||""),date:t.date,created:+t.created||Date.now()};if(t.noMaaser)o.noMaaser=true;if(t.mr===0.2)o.mr=0.2;
+      const o={id:String(t.id||uid()),kind:t.kind,amount:t.amount,cat:String(t.cat),pay:PAYS[t.pay]?t.pay:null,inst:t.pay==="inst"?(+t.inst||2):null,note:String(t.note||""),date:t.date,created:+t.created||Date.now()};if(t.noMaaser)o.noMaaser=true;if(t.kind==="inv"&&+t.usd>0&&+t.fx>0){o.usd=+t.usd;o.fx=+t.fx;if(/^\d{4}-\d{2}-\d{2}$/.test(t.fxDate))o.fxDate=t.fxDate}if(t.mr===0.2)o.mr=0.2;
       if(t.recId){o.recId=String(t.recId);o.recMonth=/^\d{4}-\d{2}$/.test(t.recMonth)?t.recMonth:t.date.slice(0,7)}
       return o});
     const rl=(d&&Array.isArray(d.recs)?d.recs:[]).filter(r=>okTx(r)&&r.id&&/^\d{4}-\d{2}$/.test(r.start)&&+r.day>=1&&+r.day<=31).map(r=>({
@@ -1088,7 +1203,7 @@ $("restoreFile").onchange=async e=>{
     if(!clean.length&&list.length)throw 0;
     actionSheet({title:"לשחזר מהגיבוי?",what:clean.length+" תנועות · "+rl.length+" קבועות"+(d.exported?" · "+new Date(d.exported).toLocaleDateString("he-IL"):""),
       msg:"השחזור יחליף את "+txs.length+" התנועות שנמצאות עכשיו בטלפון.",
-      buttons:[{label:"שחזור והחלפה",destructive:true,fn:()=>{txs=clean;recs=rl;if(d.rate===0.2||d.rate===0.1)setRate(d.rate);save();genRecurring();render();banner("השחזור הושלם: "+txs.length+" תנועות")}}]});
+      buttons:[{label:"שחזור והחלפה",destructive:true,fn:()=>{txs=clean;recs=rl;if(d.rate===0.2||d.rate===0.1)setRate(d.rate);save();genRecurring(true);render();banner("השחזור הושלם: "+txs.length+" תנועות")}}]});
   }catch(err){banner("הקובץ הזה הוא לא גיבוי של הכיס החודשי")}
 };
 
@@ -1132,8 +1247,8 @@ function sheetXml(rows,widths){
 function buildXlsx(list,upToList){
   const S=v=>({v,t:"s"}),H=v=>({v,t:"s",s:1}),M=v=>({v:Math.round(v*100)/100,s:2}),MB=v=>({v:Math.round(v*100)/100,s:4}),D=v=>({v:serial(v),s:3});
   const sorted=[...list].sort((a,b)=>a.date.localeCompare(b.date)||(a.created||0)-(b.created||0));
-  const r1=[[H("תאריך"),H("סוג"),H("קטגוריה"),H("תיאור"),H("דרך תשלום"),H("מס׳ תשלומים"),H("קבועה"),H("סכום"),H("מעשר / חומש")]];
-  sorted.forEach(t=>r1.push([D(t.date),S(KINDS[t.kind].label),S(t.cat),S(t.note||""),S(t.pay?PAYS[t.pay]:""),t.pay==="inst"?{v:t.inst||2}:null,S(t.recId?"כן":""),M(t.amount),t.kind==="inc"&&!t.noMaaser?M(t.amount*rateOf(t)):null]));
+  const r1=[[H("תאריך"),H("סוג"),H("קטגוריה"),H("תיאור"),H("דרך תשלום"),H("מס׳ תשלומים"),H("קבועה"),H("סכום"),H("מעשר / חומש"),H("סכום בדולר"),H("שער דולר")]];
+  sorted.forEach(t=>r1.push([D(t.date),S(KINDS[t.kind].label),S(t.cat),S(t.note||""),S(t.pay?PAYS[t.pay]:""),t.pay==="inst"?{v:t.inst||2}:null,S(t.recId?"כן":""),M(t.amount),t.kind==="inc"&&!t.noMaaser?M(t.amount*rateOf(t)):null,t.usd?{v:t.usd,s:5}:null,t.fx?{v:t.fx}:null]));
   const months={};sorted.forEach(t=>{const k=t.date.slice(0,7);(months[k]=months[k]||{inc:0,exp:0,sav:0,inv:0,maa:0,due:0})[t.kind]+=t.amount;if(t.kind==="inc"&&!t.noMaaser)months[k].due+=t.amount*rateOf(t)});
   const r2=[[H("חודש"),H("הכנסות"),H("הוצאות"),H("חיסכון החודש"),H("השקעות החודש"),H("מעשר לתת"),H("מעשר שניתן"),H("יתרה פנויה"),H("חיסכון נצבר"),H("השקעות נצבר"),H("מעשר נותר לתת")]];
   const T={inc:0,exp:0,sav:0,inv:0,maa:0,due:0,bal:0};
@@ -1149,8 +1264,8 @@ function buildXlsx(list,upToList){
     Object.entries(by).sort((a,b)=>b[1]-a[1]).forEach(([c,v])=>r3.push([S(KINDS[k].plural),S(c),M(v)]))});
   const r4=[[H("סוג"),H("קטגוריה"),H("תיאור"),H("יום בחודש"),H("דרך תשלום"),H("סכום")]];
   recs.forEach(r=>r4.push([S(KINDS[r.kind].label),S(r.cat),S(r.note||""),{v:r.day},S(payText(r)),M(r.amount)]));
-  const styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="2"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/><numFmt numFmtId="165" formatCode="&quot;₪&quot;#,##0.00"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Arial"/></font><font><b/><sz val="11"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE5E5EA"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="5"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="165" fontId="1" fillId="2" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
-  const sheets=[["תנועות",r1,[12,10,18,24,12,12,8,14,12]],["סיכום חודשי",r2,[16,13,13,14,14,13,13,14,14,14,15]],["לפי קטגוריה",r3,[12,20,14]],["תנועות קבועות",r4,[10,18,22,11,14,14]]];
+  const styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="3"><numFmt numFmtId="164" formatCode="dd/mm/yyyy"/><numFmt numFmtId="165" formatCode="&quot;₪&quot;#,##0.00"/><numFmt numFmtId="166" formatCode="&quot;$&quot;#,##0.00"/></numFmts><fonts count="2"><font><sz val="11"/><name val="Arial"/></font><font><b/><sz val="11"/><name val="Arial"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFE5E5EA"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="6"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/><xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/><xf numFmtId="165" fontId="1" fillId="2" borderId="0" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1"/><xf numFmtId="166" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>';
+  const sheets=[["תנועות",r1,[12,10,18,24,12,12,8,14,12,13,10]],["סיכום חודשי",r2,[16,13,13,14,14,13,13,14,14,14,15]],["לפי קטגוריה",r3,[12,20,14]],["תנועות קבועות",r4,[10,18,22,11,14,14]]];
   return zip([
     {name:"[Content_Types].xml",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+sheets.map((n,i)=>'<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join("")+"</Types>"},
     {name:"_rels/.rels",data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'},
@@ -1171,8 +1286,8 @@ $("xlsMonth").onclick=()=>exportXlsx(false);
 $("xlsAll").onclick=()=>exportXlsx(true);
 
 /* ---------- month nav & filters ---------- */
-$("prev").onclick=()=>{cur.m--;if(cur.m<0){cur.m=11;cur.y--}render()};
-$("next").onclick=()=>{if($("next").disabled)return;cur.m++;if(cur.m>11){cur.m=0;cur.y++}render()};
+$("prev").onclick=$("prev2").onclick=()=>{cur.m--;if(cur.m<0){cur.m=11;cur.y--}render()};
+$("next").onclick=$("next2").onclick=()=>{if($("next").disabled)return;cur.m++;if(cur.m>11){cur.m=0;cur.y++}render()};
 document.querySelectorAll("#filterSeg button").forEach(b=>b.onclick=()=>{filter=b.dataset.f;setSeg($("filterSeg"),"f",filter);render()});
 
 /* record due recurring transactions whenever the app comes back to the screen */
