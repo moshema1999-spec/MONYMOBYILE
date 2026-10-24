@@ -1,4 +1,4 @@
-const CACHE = "kis-v10";
+const CACHE = "kis-v11";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => {
@@ -10,6 +10,8 @@ self.addEventListener("activate", e => {
 self.addEventListener("fetch", e => {
   const req = e.request;
   if (req.method !== "GET") return;
+  // Other sites (the dollar-rate service) go straight to the network, never to the cache
+  if (new URL(req.url).origin !== self.location.origin) return;
   // App pages: try the network first so updates arrive, fall back to the saved copy offline
   if (req.mode === "navigate") {
     e.respondWith(fetch(req).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put("index.html", c)); return r; })

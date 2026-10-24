@@ -5,20 +5,20 @@
  * asBtns, asCancel, banner, bannerText, bannerUndo).
  */
 (function(){
-/* index.html:501 */
+/* index.html:582 */
 const $=id=>document.getElementById(id);
 
-/* index.html:502-507 — formatting helpers */
+/* index.html:583-588 — formatting helpers (money, pad, todayStr, uid) */
 const fmt=new Intl.NumberFormat("he-IL",{minimumFractionDigits:2,maximumFractionDigits:2});
 const money=n=>fmt.format(n);
 const pad=n=>String(n).padStart(2,"0");
 const todayStr=()=>{const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
 const uid=()=>"t"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
-/* index.html:551 — segmented control: the pressed button carries aria-pressed="true" */
+/* index.html:638 — segmented control: the pressed button carries aria-pressed="true" */
 function setSeg(seg,attr,val){seg.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset[attr]===val))}
 
-/* index.html:554-562 — theme: "auto" | "light" | "dark", saved in localStorage "kis-theme".
+/* index.html:641-649 — theme: "auto" | "light" | "dark", saved in localStorage "kis-theme".
  * The <head> must also run the pre-paint snippet from index.html:15-18. */
 function getTheme(){try{return localStorage.getItem("kis-theme")||"auto"}catch(e){return "auto"}}
 function applyTheme(t){
@@ -30,11 +30,11 @@ function applyTheme(t){
 document.querySelectorAll("#themeSeg button").forEach(b=>b.onclick=()=>applyTheme(b.dataset.t));
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>applyTheme(getTheme()));
 
-/* index.html:565-566 — large title collapses into the nav bar after 36px of scroll */
+/* index.html:652-653 — large title collapses into the nav bar after 36px of scroll */
 function onScroll(){document.documentElement.classList.toggle("scrolled",window.scrollY>36)}
 window.addEventListener("scroll",onScroll,{passive:true});
 
-/* index.html:569-589 — swipe to delete. Row markup: .swrow > button.swdel + .swcontent > button.cell */
+/* index.html:656-676 — swipe to delete. Row markup: .swrow > button.swdel + .swcontent > button.cell */
 let openSw=null;
 function closeSw(row){if(!row)return;row.querySelector(".swcontent").style.transform="";row.classList.remove("open");setTimeout(()=>{if(!row.classList.contains("open"))row.classList.remove("swiping")},260);if(openSw===row)openSw=null}
 function attachSwipe(row){
@@ -57,7 +57,7 @@ function attachSwipe(row){
 }
 document.addEventListener("pointerdown",e=>{if(openSw&&!openSw.contains(e.target))closeSw(openSw)});
 
-/* index.html:697-699 — modal sheets. KIT: the app hardcodes ["sheet","recSheet","settings","yearSheet"]; here every .sheet is used */
+/* index.html:786-790 — modal sheets. KIT: the app hardcodes ["sheet","recSheet"]; here every .sheet is used */
 const sheetIds=()=>[...document.querySelectorAll(".sheet")].map(s=>s.id);
 function openSheet(id){sheetIds().forEach(s=>$(s).hidden=s!==id);$("scrim").hidden=false;$("banner").hidden=true;document.body.style.overflow="hidden"}
 function closeSheets(){$("scrim").hidden=true;sheetIds().forEach(s=>$(s).hidden=true);document.body.style.overflow=""}
@@ -65,7 +65,7 @@ document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeSheets);
 $("scrim").onclick=closeSheets;
 document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;if(!$("as").hidden)closeAS();else closeSheets()});
 
-/* index.html:702-713 — action sheet: actionSheet({title, what, msg, buttons:[{label, destructive, fn}]}); "ביטול" is always added */
+/* index.html:793-804 — action sheet: actionSheet({title, what, msg, buttons:[{label, destructive, fn}]}); "ביטול" is always added */
 function actionSheet({title,what,msg,buttons}){
   $("asTitle").textContent=title||"";$("asTitle").hidden=!title;
   $("asWhat").textContent=what||"";$("asWhat").hidden=!what;
@@ -79,7 +79,7 @@ function actionSheet({title,what,msg,buttons}){
 function closeAS(){$("scrim2").hidden=true;$("as").hidden=true}
 $("asCancel").onclick=closeAS;$("scrim2").onclick=closeAS;
 
-/* index.html:716-722 — banner: 3s, or 5s with an undo button.
+/* index.html:808-813 — banner: 3s, or 5s with an undo button.
  * KIT: the app restores its txs/recs snapshot on undo; here banner(text, onUndo) takes a callback instead */
 let bannerTimer=null,undoFn=null;
 function banner(text,onUndo){
@@ -88,7 +88,7 @@ function banner(text,onUndo){
 }
 $("bannerUndo").onclick=()=>{if(!undoFn)return;const f=undoFn;undoFn=null;$("banner").hidden=true;f()};
 
-/* index.html:771-772 — stepper: buttons carry data-d="1" / data-d="-1".
+/* index.html:867-868 — stepper: buttons carry data-d="1" / data-d="-1".
  * KIT: wrapped as a helper; the app writes the same handler inline for each stepper */
 function stepper(el,{min,max,get,set}){
   const sync=()=>{el.children[0].disabled=get()>=max;el.children[1].disabled=get()<=min};
@@ -96,7 +96,7 @@ function stepper(el,{min,max,get,set}){
   sync();return sync;
 }
 
-/* index.html:957-964 — hand a generated file to the user: iOS share sheet, else a download link */
+/* index.html:1172-1179 — hand a generated file to the user: iOS share sheet, else a download link */
 async function deliver(blob,name){
   const file=new File([blob],name,{type:blob.type});
   if(navigator.canShare&&navigator.canShare({files:[file]})){
@@ -109,5 +109,28 @@ async function deliver(blob,name){
 applyTheme(getTheme());
 onScroll();
 
-window.Kit={$,money,pad,todayStr,uid,setSeg,getTheme,applyTheme,attachSwipe,closeSw,openSheet,closeSheets,actionSheet,closeAS,banner,stepper,deliver};
+/* index.html:1140-1160 — bottom tab bar.
+ * Markup: nav.tabbar > button.tab[data-v] (.ti icon + .tl label), button.tabplus in the middle; views are section.view#v-{name}.
+ * KIT: the app's showView also clears its own badge and renders app data; here tabs(onShow) takes a callback for that */
+let view=null;
+function tabs(onShow){
+  const show=v=>{
+    view=v;
+    document.querySelectorAll("section.view").forEach(s=>s.hidden=s.id!=="v-"+v);
+    document.querySelectorAll(".tabbar .tab").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
+    closeSw(openSw);window.scrollTo(0,0);onScroll();
+    if(onShow)onShow(v);
+  };
+  document.querySelectorAll(".tabbar .tab").forEach(b=>b.onclick=()=>show(b.dataset.v));
+  const first=document.querySelector('.tabbar .tab[aria-current="page"]')||document.querySelector(".tabbar .tab");
+  if(first)show(first.dataset.v);
+  return show;
+}
+/* index.html:1156-1160 — badge: a number (hidden at 0, "99+" above 99) or, with class "dot", just on/off */
+function badge(el,n){
+  if(el.classList.contains("dot")){el.hidden=!n;return}
+  el.hidden=!n;el.textContent=n>99?"99+":String(n);
+}
+
+window.Kit={$,money,pad,todayStr,uid,setSeg,getTheme,applyTheme,attachSwipe,closeSw,openSheet,closeSheets,tabs,badge,actionSheet,closeAS,banner,stepper,deliver};
 })();
