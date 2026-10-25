@@ -1,4 +1,4 @@
-const CACHE = "kis-v19";
+const CACHE = "kis-v21";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png"];
 
 self.addEventListener("install", e => {
