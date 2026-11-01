@@ -928,6 +928,7 @@ window.__kisLook=(function(){
       </div>
       <div class="cap plan" id="balPlan" hidden></div>
       <div class="cap plan" id="balCC" hidden></div>
+      <div class="cap plan" id="balBank"></div>
       </div>
     </div>
 
@@ -1272,7 +1273,7 @@ window.__kisLook=(function(){
       <p class="sf" id="backupInfo"></p>
       <input type="file" id="restoreFile" accept=".json,application/json" hidden>
     </div>
-    <p class="hintline">גרסה 30</p>
+    <p class="hintline">גרסה 31</p>
   </section>
 </main>
 
@@ -1566,15 +1567,21 @@ const isCC=t=>t.pay==="credit"&&t.kind!=="inc"&&cardOf(t).type!=="direct";
 /* the month the card charges a purchase: next month, or the one after when t.ccShift is 2 (bought after the cycle closed) */
 const billMk=t=>{let m=nextMk(t.date.slice(0,7));if(+t.ccShift===2)m=nextMk(m);return m};
 /* counting by charge date starts with purchases of CC_FROM; earlier months stay by purchase date, as they were recorded */
-const CC_FROM="2026-11";
+/* every month follows the bank: credit purchases count on their charge date in all months (CC_FROM is the first month that applies) */
+const CC_FROM="0000-00";
 const deferred=t=>ccMode==="charge"&&isCC(t)&&t.date.slice(0,7)>=CC_FROM;
 const chargeMk=t=>deferred(t)?billMk(t):t.date.slice(0,7);
 const chargeDate=t=>{const d=+cardOf(t).day||ccDay;return billMk(t)+"-"+(d<10?"0":"")+d};
 /* everything that counts toward month mk in the balance: recorded + planned, by charge month */
+/* a bank charge recorded for a card in month mk ("התאמה לבנק", t.settle) replaces that card's purchases and installments
+   charged in mk, so the month matches the bank and nothing is counted twice */
+const settleFor=(cid,mk)=>txs.find(t=>t.settle&&t.card===cid&&t.date&&t.date.slice(0,7)===mk);
+function covered(t,mk,set){return set.has(cardOf(t).id)&&t.kind!=="inc"&&(t.pay==="credit"&&cardOf(t).type!=="direct"||t.pay==="inst")&&(t.pay==="inst"?t.date.slice(0,7)===mk:billMk(t)===mk)}
 function balItems(mk){
-  const rec=txs.filter(t=>t.date&&chargeMk(t)===mk);
+  const set=new Set(txs.filter(t=>t.settle&&t.date&&t.date.slice(0,7)===mk).map(t=>t.card));
+  const rec=txs.filter(t=>t.date&&chargeMk(t)===mk&&!covered(t,mk,set));
   const pm=prevMk(mk);
-  const pl=ccMode==="charge"?plannedFor(mk).filter(t=>!isCC(t)||mk<CC_FROM).concat(pm>=CC_FROM?plannedFor(pm).filter(isCC):[]):plannedFor(mk);
+  const pl=(ccMode==="charge"?plannedFor(mk).filter(t=>!isCC(t)||mk<CC_FROM).concat(pm>=CC_FROM?plannedFor(pm).filter(isCC):[]):plannedFor(mk)).filter(t=>!(isCC(t)&&set.has(cardOf(t).id)&&ccMode==="charge"));
   return {rec,pl};
 }
 const rateName=x=>x===0.2?"חומש 20%":"מעשר 10%";
@@ -1797,6 +1804,8 @@ function render(){
    const bills=on?cc.map(c=>({c,b:cardBill(c,mk)})).filter(x=>x.b.total>0):[],upT=bills.reduce((s,x)=>s+x.b.total,0),el=$("balAfter");el.hidden=!(upT>0);
    if(upT>0){const days=[...new Set(bills.map(x=>+x.c.day||ccDay))].sort((a,b)=>a-b);const after=bal-upT;
      el.textContent="נשאר אחרי חיוב "+days.map(d=>(d<10?"0":"")+d).join("/")+"."+nm.slice(5,7)+": "+(after<0?"−":"")+money(Math.abs(after));el.classList.toggle("neg-t",after<0)}}
+  {const mv=tot.inc-tot.exp-tot.sav-tot.inv-tot.maa,diff=Math.max(due,tot.maa)-tot.maa+pendC;
+   $("balBank").textContent="תנועה בעו״ש החודש: "+(mv<0?"−":mv>0?"+":"")+money(Math.abs(mv))+(diff>0.004?" · היתרה הפנויה נמוכה ממנה ב־"+money(diff)+" ("+[Math.max(due,tot.maa)-tot.maa>0.004?"מעשר שעוד לא ניתן":"",pendC>0.004?"עמלות שעוד לא שולמו":""].filter(Boolean).join(" ו")+")":"")}
   lastBal=bal;renderHello();renderRecent(items);renderLife();renderPend();renderComm();renderDebts();renderCards();if(view==="card")renderCardView();
   {const pa=txs.reduce((s,t)=>s+commDue(t),0),ab=$("alerts");
    if(pa){$("alertSec").hidden=false;ab.insertBefore(plainRow({ic:"percent",cls:"b-exp",t1:"עמלות שממתינות לתחנה",t2:txs.filter(t=>commDue(t)).length+" משלוחים · הקישו כדי לסמן תשלום",amt:money(pa),onclick:()=>showView("comm","home")}),ab.firstChild)}}
@@ -2461,7 +2470,7 @@ function renderComm(){
   $("hv-comm").textContent=pa?money(pa):"";$("hs-comm").textContent=pa?pendAll.length+" ממתינות לתשלום":"כמה עמלה יורדת מכל משלוח";
 }
 function refreshCC(){setSeg($("ccSeg"),"m",ccMode);
-  $("ccFoot").textContent=ccMode==="charge"?"מנובמבר 2026: קנייה בכרטיס אשראי נספרת ביתרה ובתזרים של החודש הבא, ביום החיוב של אותו כרטיס. כרטיס דיירקט נספר באותו חודש. אוקטובר ומה שלפניו נשארים לפי תאריך הקנייה. את הכרטיסים ואת יום החיוב שלהם עורכים בלחיצה על הכרטיס בדף הבית.":"כל תנועה נספרת בחודש שבו נעשתה, גם אם האשראי יורד מהבנק רק בחודש הבא."}
+  $("ccFoot").textContent=ccMode==="charge"?"קנייה בכרטיס אשראי נספרת ביתרה ובתזרים של החודש הבא, ביום החיוב של אותו כרטיס. כרטיס דיירקט נספר באותו חודש. אם בבנק ירד סכום אחר, רושמים אותו במסך הכרטיס ב״התאמה לבנק״. את הכרטיסים ואת יום החיוב שלהם עורכים בלחיצה על הכרטיס בדף הבית.":"כל תנועה נספרת בחודש שבו נעשתה, גם אם האשראי יורד מהבנק רק בחודש הבא."}
 document.querySelectorAll("#ccSeg button").forEach(b=>b.onclick=()=>{ccMode=b.dataset.m;try{localStorage.setItem("kis-cc-mode",ccMode)}catch(e){}refreshCC();render()});
 function refreshCommSettings(){refreshCC();
   $("cmRateVal").textContent=fmtPct(commRate);
@@ -2547,7 +2556,8 @@ function cardBill(c,mk){
   const cm=nextMk(mk),d=+c.day||ccDay;
   const l=txs.filter(t=>t.date&&cardOf(t).id===c.id&&((t.pay==="credit"&&t.kind!=="inc"&&billMk(t)===cm)||(t.pay==="inst"&&t.kind!=="inc"&&t.date.slice(0,7)===cm)))
     .concat(plannedFor(mk).filter(t=>t.pay==="credit"&&t.kind!=="inc"&&cardOf(t).id===c.id));
-  return {list:l,total:sum(l),date:cm+"-"+(d<10?"0":"")+d};
+  const st=settleFor(c.id,cm);
+  return {list:l,total:st?st.amount:sum(l),date:cm+"-"+(d<10?"0":"")+d,settled:st||null};
 }
 function cardFace(el,c,bill){
   el.style.backgroundImage=c.img?'linear-gradient(180deg,rgba(0,0,0,.05) 30%,rgba(0,0,0,.55)),url("'+c.img+'")':(CCOL[c.color]||CCOL.blue);
@@ -2617,22 +2627,24 @@ function renderCardView(){
     const ml=x=>new Date(+x.slice(0,4),+x.slice(5,7)-1,1).toLocaleDateString("he-IL",{month:"long",year:"numeric"});
     $("cvLbl").textContent=c.type==="direct"?ml(cvMk):"חיוב "+dShort(bill.date);
     $("cvCap").textContent=c.type==="direct"?"חויב ב"+ml(cvMk).split(" ")[0]:(bill.date<=todayStr()?"ירד מהחשבון ב־":"יירד מהחשבון ב־")+dShort(bill.date);
-    $("cvTot").textContent=money(bill.total);
+    $("cvTot").textContent=money(sum(bill.list));
     $("cvSub").textContent=list.length?list.length+" תנועות"+(c.type==="direct"?"":" · קניות "+new Date(+prevMk(cvMk).slice(0,4),+prevMk(cvMk).slice(5,7)-1,1).toLocaleDateString("he-IL",{month:"long"})):"אין תנועות בחיוב הזה";
     const all=txs.filter(mine),lo=all.reduce((m,t)=>{const k=c.type==="direct"?t.date.slice(0,7):(t.pay==="inst"?t.date.slice(0,7):billMk(t));return k<m?k:m},cvMk);
-    $("cvPrev").disabled=cvMk<=lo;$("cvNext").disabled=cvMk>=nextMk(maxMonthKey());
+    /* allow going back a year, so a bank charge of an earlier month can be recorded */
+    let yb=todayStr().slice(0,7);for(let i=0;i<12;i++)yb=prevMk(yb);
+    $("cvPrev").disabled=cvMk<=(lo<yb?lo:yb);$("cvNext").disabled=cvMk>=nextMk(maxMonthKey());
   }else{
     list=txs.filter(t=>mine(t)&&t.date<=todayStr());
     $("cvCap").textContent="כל התנועות בכרטיס";$("cvTot").textContent=money(sum(list));$("cvSub").textContent=list.length+" תנועות";
   }
   /* transition: the charge of CC_FROM covers purchases already counted by purchase date. Recording the real bank amount
      as one bank charge in that month makes the month match the bank exactly, without touching the earlier month */
-  {const show=cvMode==="bill"&&c.type!=="direct"&&cvMk===CC_FROM&&ccMode==="charge";$("cvSync").hidden=!show;
+  {const show=cvMode==="bill"&&c.type!=="direct"&&ccMode==="charge";$("cvSync").hidden=!show;
    if(show){const bd=cvMk+"-"+((+c.day||ccDay)<10?"0":"")+(+c.day||ccDay),st=txs.find(t=>t.settle&&t.card===c.id&&t.date.slice(0,7)===cvMk);
-     $("cvSyncTxt").textContent="הקניות של החיוב הזה כבר נספרו ב"+new Date(+prevMk(cvMk).slice(0,4),+prevMk(cvMk).slice(5,7)-1,1).toLocaleDateString("he-IL",{month:"long"})+" לפי תאריך הקנייה. כדי ש"+new Date(+cvMk.slice(0,4),+cvMk.slice(5,7)-1,1).toLocaleDateString("he-IL",{month:"long"})+" יתאים לבנק, רשמו כאן את הסכום שירד בפועל ב־"+dShort(bd)+". הוא ייספר רק בחודש הזה.";
+     $("cvSyncTxt").textContent="אם בבנק ירד ב־"+dShort(bd)+" סכום אחר ממה שרשום כאן, רשמו את הסכום מהבנק. הוא ייספר ביתרה במקום התנועות של החיוב הזה, והתנועות יישארו לניתוח.";
      $("cvSyncIn").hidden=!!st;$("cvSyncDone").hidden=!st;
      if(st){$("cvCap").textContent="ירד מהחשבון ב־"+dShort(st.date)+" · לפי הבנק";$("cvTot").textContent=money(st.amount);
-       $("cvSub").textContent="באפליקציה רשומות לחיוב הזה "+list.length+" תנועות בסך "+money(sum(list));
+       $("cvSub").textContent="רשומות לחיוב הזה "+list.length+" תנועות בסך "+money(sum(list))+(Math.abs(st.amount-sum(list))>=0.01?" · הפרש "+money(Math.abs(st.amount-sum(list))):"");
        $("cvSyncDoneT").textContent="נרשם חיוב בפועל ב־"+dShort(st.date);$("cvSyncDoneA").textContent="−"+money(st.amount);$("cvSyncDone").onclick=()=>openForm("edit",st)}}}
   const box=$("cvList");box.innerHTML="";
   if(!list.length){const e=document.createElement("div");e.className="empty";e.innerHTML="<b>אין תנועות</b><span>"+(cvMode==="bill"?"נסו חיוב אחר בחיצים.":"עוד לא נרשמו תנועות בכרטיס הזה.")+"</span>";box.appendChild(e);return}
@@ -3002,6 +3014,10 @@ try{const f=localStorage.getItem("kis-fix-oct");if(f!=="undone"){let ch=0;
   if(f==="1")txs.forEach(t=>{if(t.instGroup&&/^ccg\d+$/.test(t.instGroup)&&t.date.slice(8)==="02"){t.date=prevMk(t.date.slice(0,7))+"-01";t.instDay=1;ch++}
     if(t.ccShift&&/\(טרם נקלטה\)$/.test(t.note||"")&&t.date.slice(0,7)==="2026-10"){delete t.ccShift;ch++}});
   if(ch)save();localStorage.setItem("kis-fix-oct","undone")}}catch(e){}
+/* v31: October follows the bank too, so its imported installment row moves to its real charge date (02.11) */
+try{if(localStorage.getItem("kis-fix-inst-oct")!=="1"){let ch=0;
+  txs.forEach(t=>{if(t.instGroup&&/^ccg\d+$/.test(t.instGroup)&&t.date.slice(8)==="01"){t.date=nextMk(t.date.slice(0,7))+"-02";t.instDay=2;ch++}});
+  if(ch)save();localStorage.setItem("kis-fix-inst-oct","1")}}catch(e){}
 /* v30: from November on, the imported installments sit on their real charge date (the 2nd of the following month),
    because the November bank charge already contains that month's payment. October's rows stay as they are */
 try{if(localStorage.getItem("kis-fix-inst-nov")!=="1"){let ch=0;
