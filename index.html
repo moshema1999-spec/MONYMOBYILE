@@ -337,6 +337,35 @@ button.barrow:active{background:var(--fill-press)}
 .search button{border:0;background:none;color:var(--label3);font-size:14px;padding:6px}
 .flows .dot{width:8px;height:8px;align-self:center}
 
+.cards{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(-1 * max(20px,env(safe-area-inset-left,0px)));padding:4px max(20px,env(safe-area-inset-left,0px)) 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cards::-webkit-scrollbar{display:none}
+.ccard{flex:none;width:78%;max-width:340px;aspect-ratio:1.586;border:0;border-radius:18px;scroll-snap-align:center;background-size:cover;background-position:center;color:#fff;text-align:right;font:inherit;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:0 10px 24px rgba(15,23,42,.22),inset 0 1px 0 rgba(255,255,255,.25);text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.ccard:active{transform:scale(.98)}
+.cctop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ccname{font-size:16px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cctype{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.22);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);text-shadow:none}
+.ccchip{width:38px;height:28px;border-radius:7px;background:linear-gradient(135deg,#F6E3A1,#C9A24A);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);opacity:.9}
+.ccbot{display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.ccnum{font-size:17px;letter-spacing:.08em;font-weight:500}
+.ccbill{display:flex;flex-direction:column;align-items:flex-start;font-size:11px;opacity:.95}
+.ccbill b{font-size:17px;font-weight:700}
+.ccard.add{background:none;border:2px dashed var(--label3);color:var(--label2);box-shadow:none;text-shadow:none;align-items:center;justify-content:center;gap:6px;width:46%;font-size:14px;font-weight:600}
+.ccplus{font-size:30px;line-height:1;color:var(--tint)}
+.ccard.preview{width:100%;max-width:380px;margin:0 auto}
+.ccard.preview:active{transform:none}
+.swatches{display:flex;gap:12px;justify-content:center}
+.swatches button{width:34px;height:34px;border-radius:50%;border:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.swatches button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg,#fff),0 0 0 4px var(--tint)}
+
+.balbar{padding:0!important;border-radius:16px;margin-top:-6px;align-self:center;width:min(100%,380px)}
+.bbhead{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--label);font:inherit;padding:10px 16px;text-align:right;min-height:48px}
+.bbhead .cap{flex:1;min-width:0;font-size:14px;color:var(--label2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.balbar .bbhead .big{font-size:20px;line-height:1.2;margin:0;text-align:left;font-weight:700}
+.bbchev{width:18px;height:18px;flex:none;color:var(--label3);transition:transform .2s}
+.balbar.open .bbchev{transform:rotate(180deg)}
+.bbdet{padding:0 16px 14px;border-top:1px solid var(--sep)}
+.bbdet .flows{margin-top:10px}
+
 /* ===== theme presets: html[data-skin] picks colors; the glass level sliders set --glass, --glass-strong, --sheet-cell, --ov and --glass-blur inline on <html> ===== */
 html[data-skin="ocean"]{--bg:#06141F;--blob-bordeaux:#1C6FB8;--blob-amber:#38C7D9;--blob-purple:#2B3FA8;--blob-teal:#14A37F;
   --tint:#7FE3FF;--bar:rgba(6,20,31,.4);--sw-bg:rgba(14,36,56,.94);--badge-ring:rgba(6,20,31,.85);--plus-glow:rgba(56,199,217,.42);
@@ -714,6 +743,35 @@ button.barrow:active{background:var(--fill-press)}
 .flows .dot{width:8px;height:8px;align-self:center}
 html[data-skin="clean"] .search{background:var(--cell);box-shadow:var(--shadow)}
 
+.cards{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(-1 * max(20px,env(safe-area-inset-left,0px)));padding:4px max(20px,env(safe-area-inset-left,0px)) 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.cards::-webkit-scrollbar{display:none}
+.ccard{flex:none;width:78%;max-width:340px;aspect-ratio:1.586;border:0;border-radius:18px;scroll-snap-align:center;background-size:cover;background-position:center;color:#fff;text-align:right;font:inherit;padding:16px 18px;display:flex;flex-direction:column;justify-content:space-between;position:relative;box-shadow:0 10px 24px rgba(15,23,42,.22),inset 0 1px 0 rgba(255,255,255,.25);text-shadow:0 1px 3px rgba(0,0,0,.35)}
+.ccard:active{transform:scale(.98)}
+.cctop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ccname{font-size:16px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cctype{font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.22);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);text-shadow:none}
+.ccchip{width:38px;height:28px;border-radius:7px;background:linear-gradient(135deg,#F6E3A1,#C9A24A);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);opacity:.9}
+.ccbot{display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.ccnum{font-size:17px;letter-spacing:.08em;font-weight:500}
+.ccbill{display:flex;flex-direction:column;align-items:flex-start;font-size:11px;opacity:.95}
+.ccbill b{font-size:17px;font-weight:700}
+.ccard.add{background:none;border:2px dashed var(--label3);color:var(--label2);box-shadow:none;text-shadow:none;align-items:center;justify-content:center;gap:6px;width:46%;font-size:14px;font-weight:600}
+.ccplus{font-size:30px;line-height:1;color:var(--tint)}
+.ccard.preview{width:100%;max-width:380px;margin:0 auto}
+.ccard.preview:active{transform:none}
+.swatches{display:flex;gap:12px;justify-content:center}
+.swatches button{width:34px;height:34px;border-radius:50%;border:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.swatches button[aria-pressed="true"]{box-shadow:0 0 0 2px var(--bg,#fff),0 0 0 4px var(--tint)}
+
+.balbar{padding:0!important;border-radius:16px;margin-top:-6px;align-self:center;width:min(100%,380px)}
+.bbhead{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;color:var(--label);font:inherit;padding:10px 16px;text-align:right;min-height:48px}
+.bbhead .cap{flex:1;min-width:0;font-size:14px;color:var(--label2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.balbar .bbhead .big{font-size:20px;line-height:1.2;margin:0;text-align:left;font-weight:700}
+.bbchev{width:18px;height:18px;flex:none;color:var(--label3);transition:transform .2s}
+.balbar.open .bbchev{transform:rotate(180deg)}
+.bbdet{padding:0 16px 14px;border-top:1px solid var(--sep)}
+.bbdet .flows{margin-top:10px}
+
 /* ===== "clean" skin: digital-bank look on top of the classic sheet ===== */
 html[data-skin="clean"]{--bg:#F3F5F9;--cell:#FFFFFF;--sheet:#F3F5F9;--sheet-cell:#FFFFFF;
   --label:#0F172A;--label2:rgba(15,23,42,.58);--label3:rgba(15,23,42,.32);--sep:rgba(15,23,42,.08);--fill:rgba(15,23,42,.05);--fill-press:rgba(15,23,42,.05);
@@ -823,9 +881,15 @@ window.__kisLook=(function(){
       </div>
     </div>
 
-    <div class="card balance hero">
-      <div class="cap" id="balCap">יתרה פנויה החודש</div>
-      <div class="big num" id="bal">0.00</div>
+    <div class="cards" id="cards" aria-label="כרטיסי אשראי"></div>
+
+    <div class="card balance balbar" id="balBar">
+      <button type="button" class="bbhead" id="balToggle" aria-expanded="false" aria-controls="balDet">
+        <span class="cap" id="balCap">יתרה פנויה החודש</span>
+        <span class="big num" id="bal">0.00</span>
+        <svg class="i bbchev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="bbdet" id="balDet" hidden>
       <div class="flows">
         <span class="fl"><span class="fa up">▲</span>הכנסות <b class="num" id="t-inc">0.00</b></span>
         <span class="fl"><span class="fa down">▼</span>הוצאות <b class="num" id="t-exp">0.00</b></span>
@@ -835,6 +899,8 @@ window.__kisLook=(function(){
         <span class="fl">השקעות <b class="num" id="t-inv">0.00</b></span>
       </div>
       <div class="cap plan" id="balPlan" hidden></div>
+      <div class="cap plan" id="balCC" hidden></div>
+      </div>
     </div>
 
     <div class="quick" id="quick">
@@ -1116,6 +1182,11 @@ window.__kisLook=(function(){
       <p class="sf">חל על הכנסות חדשות. הכנסות שכבר נרשמו נשארות לפי האחוז שהיה כשנרשמו.</p>
     </div>
     <div class="sec">
+      <h2 class="sh">כרטיס אשראי</h2>
+      <div class="seg" id="ccSeg"><button type="button" data-m="charge">לפי מועד החיוב</button><button type="button" data-m="buy">לפי תאריך הקנייה</button></div>
+      <p class="sf" id="ccFoot"></p>
+    </div>
+    <div class="sec">
       <h2 class="sh">עמלות</h2>
       <div class="group">
         <div class="cell"><span class="grow"><span class="t1">אחוז העמלה</span></span><span class="val num" id="cmRateVal">12%</span><span class="stepper" id="cmRateStep"><button type="button" data-d="1" aria-label="עוד אחוז">+</button><button type="button" data-d="-1" aria-label="פחות אחוז">−</button></span></div>
@@ -1149,7 +1220,7 @@ window.__kisLook=(function(){
       <p class="sf" id="backupInfo"></p>
       <input type="file" id="restoreFile" accept=".json,application/json" hidden>
     </div>
-    <p class="hintline">גרסה 22</p>
+    <p class="hintline">גרסה 25</p>
   </section>
 </main>
 
@@ -1187,6 +1258,7 @@ window.__kisLook=(function(){
       <div class="sec"><div class="group">
         <button type="button" class="cell" id="catRow"><span class="grow"><span class="t1">קטגוריה</span></span><span class="val" id="catVal">בחירה</span><span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span></button>
         <button type="button" class="cell" id="payRow"><span class="grow"><span class="t1">דרך תשלום</span></span><span class="val" id="payVal">ללא</span><span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span></button>
+        <button type="button" class="cell" id="cardRow" hidden><span class="grow"><span class="t1">כרטיס</span></span><span class="val" id="cardVal"></span><span class="disc"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></span></button>
         <div class="cell" id="instRow" hidden><span class="grow"><span class="t1">מספר תשלומים</span></span><span class="val num" id="instVal">3</span><span class="stepper" id="instStep"><button type="button" data-d="1" aria-label="עוד תשלום">+</button><button type="button" data-d="-1" aria-label="פחות תשלומים">−</button></span></div>
         <div class="cell" id="instDayRow" hidden><span class="grow"><span class="t1">יום חיוב בחודש</span></span><span class="val num" id="instDayVal">10</span><span class="stepper" id="instDayStep"><button type="button" data-d="1" aria-label="יום מאוחר יותר">+</button><button type="button" data-d="-1" aria-label="יום מוקדם יותר">−</button></span></div>
         <div class="cell" id="instFirstRow" hidden><span class="grow"><span class="t1">תשלום ראשון</span></span><div class="seg mini" id="instFirstSeg"><button type="button" data-f="this" aria-pressed="false">החודש</button><button type="button" data-f="next" aria-pressed="true">בחודש הבא</button></div></div>
@@ -1365,6 +1437,31 @@ window.__kisLook=(function(){
   </div></div>
 </div>
 
+<!-- card sheet -->
+<div class="sheet" id="cardSheet" hidden role="dialog" aria-modal="true" aria-labelledby="cdTitle">
+  <div class="grabber"></div>
+  <div class="sheetnav gut"><button type="button" class="navtext" data-close>ביטול</button><h3 id="cdTitle">כרטיס</h3><button type="button" class="navtext trail" id="cdSave">שמירה</button></div>
+  <div class="sheetbody gut"><div class="inner">
+    <div class="ccard preview" id="cdPrev"></div>
+    <div class="group"><button type="button" class="cell tint center" id="cdImg">בחירת תמונה לכרטיס</button><button type="button" class="cell destructive center" id="cdImgDel" hidden>הסרת התמונה</button></div>
+    <input type="file" id="cdImgIn" accept="image/*" hidden>
+    <div class="swatches" id="cdColors"></div>
+    <div class="group">
+      <label class="cell"><span class="lbl">שם</span><input class="text" id="cdName" placeholder="למשל: ישראכרט פלטינה" autocomplete="off"></label>
+      <label class="cell"><span class="lbl">4 ספרות</span><input class="text num" id="cdLast4" inputmode="numeric" maxlength="4" placeholder="1234" autocomplete="off"></label>
+    </div>
+    <div class="sec">
+      <h2 class="sh">סוג הכרטיס</h2>
+      <div class="seg" id="cdType"><button type="button" data-t="credit">אשראי · חיוב חודשי</button><button type="button" data-t="direct">דיירקט · חיוב מיידי</button></div>
+    </div>
+    <div class="group" id="cdDayGrp"><div class="cell"><span class="grow"><span class="t1">יום החיוב בחודש</span></span><span class="val num" id="cdDayVal">2</span><span class="stepper" id="cdDayStep"><button type="button" data-d="1" aria-label="יום מאוחר יותר">+</button><button type="button" data-d="-1" aria-label="יום מוקדם יותר">−</button></span></div></div>
+    <p class="sf" id="cdFoot"></p>
+    <p class="errline" id="cdErr" hidden></p>
+    <section class="sec" id="cdTxSec" hidden><h2 class="sh" id="cdTxHead"></h2><div class="group" id="cdTx"></div></section>
+    <div class="group" id="cdActs"><button type="button" class="cell destructive center" id="cdDel">מחיקת הכרטיס</button></div>
+  </div></div>
+</div>
+
 <!-- action sheet -->
 <div class="scrim2" id="scrim2" hidden></div>
 <div class="actionsheet" id="as" hidden role="alertdialog" aria-modal="true" aria-labelledby="asTitle">
@@ -1395,6 +1492,28 @@ const commOf=t=>t.kind==="inc"&&+t.comm>0?Math.round(t.amount*t.comm*100)/100:0;
 const commIsPaid=t=>!!(t.commPaid&&txs.some(x=>x.id===t.commPaid));
 const commDue=t=>commOf(t)&&!commIsPaid(t)?commOf(t):0;
 const netOf=t=>t.amount-commOf(t);
+/* credit card: a purchase made in month M leaves the account on ccDay of month M+1.
+   With ccMode "charge" the balance, the tiles and the cash flow count it in the month it is charged */
+let ccMode="charge",ccDay=2;
+try{if(localStorage.getItem("kis-cc-mode")==="buy")ccMode="buy";const d=+localStorage.getItem("kis-cc-day");if(d>=1&&d<=28)ccDay=d}catch(e){}
+const nextMk=mk=>{let [y,m]=mk.split("-").map(Number);m++;if(m>12){m=1;y++}return y+"-"+(m<10?"0":"")+m};
+const prevMk=mk=>{let [y,m]=mk.split("-").map(Number);m--;if(m<1){m=12;y--}return y+"-"+(m<10?"0":"")+m};
+/* cards: each credit / installment transaction can carry t.card. A "direct" (debit) card is charged in the same month */
+const LSC="kis-cards-v1";
+let cards=(()=>{try{const v=JSON.parse(localStorage.getItem(LSC)||"null");if(Array.isArray(v))return v}catch(e){}
+  return [{id:"card1",name:"ישראכרט",last4:"0524",type:"credit",day:ccDay,color:"blue",img:""}]})();
+function saveCards(){try{localStorage.setItem(LSC,JSON.stringify(cards));return true}catch(e){return false}}
+const cardOf=t=>cards.find(c=>c.id===t.card)||cards.find(c=>c.type==="credit")||cards[0]||{id:"",name:"",last4:"",type:"credit",day:ccDay};
+const usesCard=t=>(t.pay==="credit"||t.pay==="inst")&&t.kind!=="inc";
+const isCC=t=>t.pay==="credit"&&t.kind!=="inc"&&cardOf(t).type!=="direct";
+const chargeMk=t=>ccMode==="charge"&&isCC(t)?nextMk(t.date.slice(0,7)):t.date.slice(0,7);
+const chargeDate=t=>{const d=+cardOf(t).day||ccDay;return nextMk(t.date.slice(0,7))+"-"+(d<10?"0":"")+d};
+/* everything that counts toward month mk in the balance: recorded + planned, by charge month */
+function balItems(mk){
+  const rec=txs.filter(t=>t.date&&chargeMk(t)===mk);
+  const pl=ccMode==="charge"?plannedFor(mk).filter(t=>!isCC(t)).concat(plannedFor(prevMk(mk)).filter(isCC)):plannedFor(mk);
+  return {rec,pl};
+}
 const rateName=x=>x===0.2?"חומש 20%":"מעשר 10%";
 const dueOf=list=>list.filter(t=>t.kind==="inc"&&!t.noMaaser).reduce((s,t)=>s+netOf(t)*rateOf(t),0);
 const PAYS={bit:"ביט",credit:"אשראי",cash:"מזומן",bank:"העברה בנקאית",inst:"תשלומים"};
@@ -1433,7 +1552,7 @@ const fmt=new Intl.NumberFormat("he-IL",{minimumFractionDigits:2,maximumFraction
 const money=n=>fmt.format(n);
 const pad=n=>String(n).padStart(2,"0");
 const todayStr=()=>{const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
-const payText=t=>t.pay?(t.pay==="inst"?(t.instNo?"תשלום "+t.instNo+" מתוך "+t.inst:(t.inst||2)+" תשלומים"):PAYS[t.pay]):"";
+const payText=t=>t.pay?(t.pay==="inst"?(t.instNo?"תשלום "+t.instNo+" מתוך "+t.inst:(t.inst||2)+" תשלומים"):PAYS[t.pay])+(usesCard(t)&&cards.length>1&&cardOf(t).last4?" ·"+cardOf(t).last4:""):"";
 const uid=()=>"t"+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const dayLabel=d=>new Date(d+"T12:00:00").toLocaleDateString("he-IL",{day:"numeric",month:"long"});
 const usdText=v=>"$"+money(v);
@@ -1459,7 +1578,7 @@ function genRecurring(silent){
       const date=mk+"-"+pad(Math.min(r.day,lastDay(y,m)));
       if(date<=today&&!(r.skip||[]).includes(mk)&&!txs.some(t=>t.recId===r.id&&t.recMonth===mk)){
         const id=uid();
-        txs.push({id,kind:r.kind,amount:r.amount,cat:r.cat,pay:r.pay||null,inst:r.inst||null,note:r.note||"",noMaaser:r.noMaaser||undefined,mr:r.kind==="inc"&&rate===0.2?0.2:undefined,date,created:Date.now(),recId:r.id,recMonth:mk});added++;
+        txs.push({id,card:r.card||undefined,kind:r.kind,amount:r.amount,cat:r.cat,pay:r.pay||null,inst:r.inst||null,note:r.note||"",noMaaser:r.noMaaser||undefined,mr:r.kind==="inc"&&rate===0.2?0.2:undefined,date,created:Date.now(),recId:r.id,recMonth:mk});added++;
         if(!silent)unseen.push(id);
       }
       m++;if(m>12){m=1;y++}
@@ -1540,7 +1659,7 @@ document.addEventListener("pointerdown",e=>{if(openSw&&!openSw.contains(e.target
 function monthKey(){return cur.y+"-"+pad(cur.m+1)}
 function sum(list){return list.reduce((s,t)=>s+t.amount,0)}
 /* the latest month you can move to: this month, or later when future payments (installments) exist */
-function maxMonthKey(){let k=todayStr().slice(0,7);txs.forEach(t=>{if(t.date&&t.date.slice(0,7)>k)k=t.date.slice(0,7)});
+function maxMonthKey(){let k=todayStr().slice(0,7);txs.forEach(t=>{if(t.date&&t.date.slice(0,7)>k)k=t.date.slice(0,7);if(t.date&&isCC(t)&&ccMode==="charge"&&chargeMk(t)>k)k=chargeMk(t)});
   if(recs.length){let [y,m]=todayStr().split("-").map(Number);m+=12;while(m>12){m-=12;y++}const r12=y+"-"+pad(m);if(r12>k)k=r12}
   return k}
 /* recurring transactions planned for month mk that are not recorded yet (their day is still ahead) */
@@ -1550,7 +1669,7 @@ function plannedFor(mk){
     if(mk<r.start||(r.skip||[]).includes(mk)||txs.some(t=>t.recId===r.id&&t.recMonth===mk))return;
     const date=mk+"-"+pad(Math.min(r.day,lastDay(y,m)));
     if(date<=today)return;
-    out.push({id:"plan-"+r.id+"-"+mk,kind:r.kind,amount:r.amount,cat:r.cat,pay:r.pay||null,inst:r.inst||null,note:r.note||"",date,created:0,recId:r.id,recMonth:mk,planned:true});
+    out.push({id:"plan-"+r.id+"-"+mk,card:r.card||undefined,kind:r.kind,amount:r.amount,cat:r.cat,pay:r.pay||null,inst:r.inst||null,note:r.note||"",date,created:0,recId:r.id,recMonth:mk,planned:true});
   });
   return out;
 }
@@ -1560,20 +1679,21 @@ function render(){
 
   const mk=monthKey();
   const items=txs.filter(t=>t.date&&t.date.slice(0,7)===mk);
-  const tot={};ORDER.forEach(k=>{tot[k]=sum(items.filter(t=>t.kind===k));$("t-"+k).textContent=money(tot[k])});
-  const due=dueOf(items);
-  const pendC=items.reduce((s,t)=>s+commDue(t),0);
+  const BI=balItems(mk),bItems=BI.rec;
+  const tot={};ORDER.forEach(k=>{tot[k]=sum(bItems.filter(t=>t.kind===k));$("t-"+k).textContent=money(tot[k])});
+  const due=dueOf(bItems);
+  const pendC=bItems.reduce((s,t)=>s+commDue(t),0);
   const bal=tot.inc-tot.exp-tot.sav-tot.inv-Math.max(due,tot.maa)-pendC;
   $("m-due").textContent=money(due);
   $("m-dueSub").textContent=(rate===0.2?"חומש · 20%":"מעשר · 10%")+" מההכנסות";
   const b=$("bal");b.textContent=(bal<0?"−":"")+money(Math.abs(bal));
   b.className="big num "+(bal>0?"pos":bal<0?"neg":"");
   // planned recurring of this month: shown in the list and as a separate line, not counted in the totals above
-  const plan=plannedFor(mk);
-  const all=items.concat(plan),t2={};ORDER.forEach(k=>t2[k]=sum(all.filter(t=>t.kind===k)));
+  const plan=plannedFor(mk),bPlan=BI.pl;
+  const all=bItems.concat(bPlan),t2={};ORDER.forEach(k=>t2[k]=sum(all.filter(t=>t.kind===k)));
   const pbal=t2.inc-t2.exp-t2.sav-t2.inv-Math.max(dueOf(all),t2.maa)-pendC;
-  $("balPlan").hidden=!plan.length;
-  $("balPlan").textContent=plan.length?"צפוי בסוף החודש, כולל "+(plan.length===1?"תנועה קבועה אחת שעוד לא נרשמה":plan.length+" תנועות קבועות שעוד לא נרשמו")+": "+(pbal<0?"−":"")+money(Math.abs(pbal)):"";
+  $("balPlan").hidden=!bPlan.length;
+  $("balPlan").textContent=bPlan.length?"צפוי בסוף החודש, כולל "+(bPlan.length===1?"תנועה קבועה אחת שעוד לא חויבה":bPlan.length+" תנועות קבועות שעוד לא חויבו")+": "+(pbal<0?"−":"")+money(Math.abs(pbal)):"";
 
   // accumulated savings & investments up to the end of the shown month
   const upTo=txs.filter(t=>t.date&&t.date.slice(0,7)<=mk);
@@ -1603,7 +1723,13 @@ function render(){
   const mlabel=new Date(cur.y,cur.m,1).toLocaleDateString("he-IL",{month:"long",year:"numeric"});
   $("panelMonth").textContent=mlabel;
   $("balCap").textContent=isNowM(mk)?"יתרה פנויה החודש":"יתרה פנויה ב"+new Date(cur.y,cur.m,1).toLocaleDateString("he-IL",{month:"long"});
-  lastBal=bal;renderHello();renderRecent(items);renderLife();renderPend();renderComm();renderDebts();
+  {const inM=bItems.filter(t=>isCC(t)&&t.date.slice(0,7)!==mk),nxt=items.filter(t=>isCC(t)&&!t.planned);
+   const lbl=x=>new Date(+x.slice(0,4),+x.slice(5,7)-1,1).toLocaleDateString("he-IL",{month:"long"});
+   const parts=[];
+   if(ccMode==="charge"){if(inM.length)parts.push("כולל חיובי אשראי של "+money(sum(inM))+" ב"+lbl(mk)+" (קניות "+lbl(prevMk(mk))+")");
+     if(nxt.length)parts.push("קניות אשראי של "+lbl(mk)+" ("+money(sum(nxt))+") ירדו ב"+lbl(nextMk(mk)))}
+   $("balCC").hidden=!parts.length;$("balCC").textContent=parts.join(" · ")}
+  lastBal=bal;renderHello();renderRecent(items);renderLife();renderPend();renderComm();renderDebts();renderCards();
   {const pa=txs.reduce((s,t)=>s+commDue(t),0),ab=$("alerts");
    if(pa){$("alertSec").hidden=false;ab.insertBefore(plainRow({ic:"percent",cls:"b-exp",t1:"עמלות שממתינות לתחנה",t2:txs.filter(t=>commDue(t)).length+" משלוחים · הקישו כדי לסמן תשלום",amt:money(pa),onclick:()=>showView("comm","home")}),ab.firstChild)}}
 
@@ -1627,6 +1753,9 @@ function render(){
   const pays=$("pays");pays.innerHTML="";
   $("paySec").hidden=!exps.some(t=>t.pay);$("e-pays").hidden=!$("paySec").hidden;$("dv-pays").textContent="";
   Object.keys(PAYS).forEach(p=>{
+    if(p==="credit"&&cards.length>1){cards.forEach(c=>{const v=sum(exps.filter(t=>t.pay==="credit"&&cardOf(t).id===c.id));
+      const el=document.createElement("div");el.className="cell";el.innerHTML='<span class="grow"><span class="t1"></span></span><span class="val num"></span>';
+      el.querySelector(".t1").textContent=(c.type==="direct"?"דיירקט · ":"אשראי · ")+c.name+(c.last4?" ·"+c.last4:"");el.querySelector(".val").textContent=money(v);pays.appendChild(el)});return}
     const el=document.createElement("div");el.className="cell";
     el.innerHTML='<span class="grow"><span class="t1"></span></span><span class="val num"></span>';
     el.querySelector(".t1").textContent=PAYS[p];el.querySelector(".val").textContent=money(sum(exps.filter(t=>t.pay===p)));
@@ -1664,7 +1793,7 @@ function render(){
       r.querySelector(".t1").textContent=t.note||t.cat;
       const isRec=t.recId&&recs.some(x=>x.id===t.recId);
       if(t.usd){const fl=document.createElement("span");fl.className="t2 num-mixed";fl.textContent=(invCur==="usd"?money(t.amount)+" בשקלים":usdText(t.usd))+" · שער "+(+t.fx).toFixed(3);r.querySelector(".grow").appendChild(fl)}
-      r.querySelector(".t2").textContent=[t.note?t.cat:KINDS[t.kind].label,payText(t),isRec?"קבועה":"",commOf(t)?"עמלה "+money(commOf(t))+(commIsPaid(t)?" · שולמה":" · ממתינה"):"",t.kind==="inc"&&!t.noMaaser?(rateOf(t)===0.2?"חומש ":"מעשר ")+money(netOf(t)*rateOf(t)):""].filter(Boolean).join(" · ");
+      r.querySelector(".t2").textContent=[t.note?t.cat:KINDS[t.kind].label,payText(t),isRec?"קבועה":"",ccMode==="charge"&&isCC(t)&&!t.planned?"יחויב "+dShort(chargeDate(t)):"",commOf(t)?"עמלה "+money(commOf(t))+(commIsPaid(t)?" · שולמה":" · ממתינה"):"",t.kind==="inc"&&!t.noMaaser?(rateOf(t)===0.2?"חומש ":"מעשר ")+money(netOf(t)*rateOf(t)):""].filter(Boolean).join(" · ");
       const a=r.querySelector(".amt");a.textContent=t.usd&&invCur==="usd"?usdText(t.usd):KINDS[t.kind].sign+money(t.amount);if(t.kind==="inc")a.classList.add("inc");
       r.setAttribute("aria-label",KINDS[t.kind].label+", "+t.cat+", "+money(t.amount)+". לעריכה");
       r.onclick=()=>openForm("edit",t);
@@ -1690,7 +1819,7 @@ function render(){
 }
 
 /* ---------- sheets ---------- */
-const SHEETS=["sheet","recSheet","panelSheet","lifeSheet","tdSheet","dbSheet"];
+const SHEETS=["sheet","recSheet","panelSheet","lifeSheet","tdSheet","dbSheet","cardSheet"];
 function openSheet(id){SHEETS.forEach(s=>$(s).hidden=s!==id);$("scrim").hidden=false;$("banner").hidden=true;document.body.style.overflow="hidden"}
 function closeSheets(){$("scrim").hidden=true;SHEETS.forEach(s=>$(s).hidden=true);document.body.style.overflow=""}
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeSheets);
@@ -1753,7 +1882,8 @@ function askStop(r){
 }
 
 /* ---------- add / edit form ---------- */
-let commRateF=0.12;
+let commRateF=0.12,fcard=null;
+function defaultCardId(){let l=null;try{l=localStorage.getItem("kis-last-card")}catch(e){}return cards.some(c=>c.id===l)?l:(cards.find(c=>c.type==="credit")||cards[0]||{}).id||null}
 let mode="new",editing=null,kind="exp",cat=null,pay=null,inst=3,recDay=1,formRate=0.1,fcur="ils",fxManual=false,fxDate=null,fxReq=0,instDay=10,instFirst="next",instFirstSet=false;
 
 /* ---------- installments: one purchase becomes one payment per month on the chosen charge day ---------- */
@@ -1775,6 +1905,8 @@ function setKind(k){kind=k;setSeg(kindSeg,"k",k);if(!KINDS[k].cats.includes(cat)
 function syncRows(){
   $("catVal").textContent=cat||"בחירה";$("catVal").style.color=cat?"":"var(--tint)";
   $("payVal").textContent=pay?PAYS[pay]:"ללא";
+  {const show=(pay==="credit"||pay==="inst")&&kind!=="inc"&&cards.length>0;$("cardRow").hidden=!show;
+   if(show){if(!cards.some(c=>c.id===fcard))fcard=defaultCardId();const c=cards.find(x=>x.id===fcard);$("cardVal").textContent=c?c.name+(c.last4?" ·"+c.last4:""):"";}}
   const isUsdNow=kind==="inv"&&fcur==="usd";
   if(pay==="inst"&&(isUsdNow||mode==="rec"))pay=null;
   const isInst=pay==="inst";
@@ -1879,6 +2011,7 @@ function openPicker(title,options,selected,onPick){
   $("sheet").querySelector(".sheetbody").scrollTop=0;
 }
 $("catRow").onclick=()=>openPicker("קטגוריה",KINDS[kind].cats.map(c=>({value:c,label:c})),cat,v=>{cat=v;if(kind==="inc"&&mode==="new"){$("maaToggle").checked=v!=="החזרים";$("commToggle").checked=commCats.includes(v)}});
+$("cardRow").onclick=()=>openPicker("כרטיס",cards.map(c=>({value:c.id,label:c.name+(c.last4?" ·"+c.last4:"")+(c.type==="direct"?" · דיירקט":"")})),fcard,v=>{fcard=v});
 $("payRow").onclick=()=>{const noInst=(kind==="inv"&&fcur==="usd")||mode==="rec";
   openPicker("דרך תשלום",[{value:null,label:"ללא"}].concat(Object.keys(PAYS).filter(p=>!(noInst&&p==="inst")).map(p=>({value:p,label:PAYS[p]}))),pay,v=>{pay=v})};
 
@@ -1902,6 +2035,7 @@ function openForm(m,obj,opts){
   $("amount").value=obj?String(t.usd||t.instTotal||t.amount):"";
   setKind(t.kind||(opts&&opts.kind)||(filter!=="all"?filter:"exp"));
   $("maaToggle").checked=!t.noMaaser;
+  fcard=t.card||defaultCardId();
   commRateF=+t.comm>0?+t.comm:commRate;$("commToggle").checked=m==="edit"?+t.comm>0:false;
   $("noteIn").value=t.note||"";
   formAfter=opts&&opts.after||null;
@@ -1937,7 +2071,7 @@ function submitForm(){
   if(isUsd&&!(fx>0)){showErr("הזינו את שער הדולר.");return}
   const wantsRec=!isUsd&&(mode==="rec"||(!$("recToggleRow").hidden&&$("recToggle").checked));
   const day=wantsRec?recDay:null;
-  const fields={kind,amount:Math.round((isUsd?amt*fx:amt)*100)/100,cat,pay:pay||null,inst:pay==="inst"?inst:null,note:$("noteIn").value.trim(),noMaaser:kind==="inc"&&!$("maaToggle").checked?true:undefined,mr:kind==="inc"&&formRate===0.2?0.2:undefined,comm:kind==="inc"&&pay!=="inst"&&$("commToggle").checked?commRateF:undefined,
+  const fields={kind,amount:Math.round((isUsd?amt*fx:amt)*100)/100,cat,pay:pay||null,inst:pay==="inst"?inst:null,note:$("noteIn").value.trim(),noMaaser:kind==="inc"&&!$("maaToggle").checked?true:undefined,mr:kind==="inc"&&formRate===0.2?0.2:undefined,comm:kind==="inc"&&pay!=="inst"&&$("commToggle").checked?commRateF:undefined,card:(pay==="credit"||pay==="inst")&&kind!=="inc"&&fcard?fcard:undefined,
     usd:isUsd?Math.round(amt*100)/100:undefined,fx:isUsd?fx:undefined,fxDate:isUsd&&!fxManual?fxDate:undefined};
 
   if(mode==="rec"){
@@ -1960,7 +2094,8 @@ function submitForm(){
     return;
   }
   let tx;
-  if(mode==="edit"){tx=Object.assign({},editing,fields,{date});if(!tx.comm){delete tx.comm;delete tx.commPaid}
+  if(fields.card){try{localStorage.setItem("kis-last-card",fields.card)}catch(e){}}
+  if(mode==="edit"){tx=Object.assign({},editing,fields,{date});if(!fields.card)delete tx.card;if(!tx.comm){delete tx.comm;delete tx.commPaid}
     ["instNo","instGroup","instTotal","instBuy","instDay"].forEach(k=>delete tx[k]);
     if(editing.instGroup)txs=txs.filter(x=>x.instGroup!==editing.instGroup||x.id===editing.id);
     txs=txs.map(x=>x.id===tx.id?tx:x)}
@@ -2007,6 +2142,11 @@ function go(k){
 document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
 $("seeAll").onclick=()=>showView("list");
 
+/* the free-balance bar under the cards: one line, opens to the full breakdown */
+let balOpen=false;try{balOpen=localStorage.getItem("kis-bal-open")==="1"}catch(e){}
+function syncBal(){$("balDet").hidden=!balOpen;$("balBar").classList.toggle("open",balOpen);$("balToggle").setAttribute("aria-expanded",String(balOpen))}
+$("balToggle").onclick=()=>{balOpen=!balOpen;try{localStorage.setItem("kis-bal-open",balOpen?"1":"0")}catch(e){}syncBal()};
+syncBal();
 function isNowM(mk){return mk===todayStr().slice(0,7)}
 function renderHello(){
   const h=new Date().getHours();
@@ -2248,7 +2388,10 @@ function renderComm(){
   // hub + settings values
   $("hv-comm").textContent=pa?money(pa):"";$("hs-comm").textContent=pa?pendAll.length+" ממתינות לתשלום":"כמה עמלה יורדת מכל משלוח";
 }
-function refreshCommSettings(){
+function refreshCC(){setSeg($("ccSeg"),"m",ccMode);
+  $("ccFoot").textContent=ccMode==="charge"?"קנייה בכרטיס אשראי נספרת ביתרה ובתזרים של החודש הבא, ביום החיוב של אותו כרטיס. כרטיס דיירקט נספר באותו חודש. את הכרטיסים ואת יום החיוב שלהם עורכים בלחיצה על הכרטיס בדף הבית.":"כל תנועה נספרת בחודש שבו נעשתה, גם אם האשראי יורד מהבנק רק בחודש הבא."}
+document.querySelectorAll("#ccSeg button").forEach(b=>b.onclick=()=>{ccMode=b.dataset.m;try{localStorage.setItem("kis-cc-mode",ccMode)}catch(e){}refreshCC();render()});
+function refreshCommSettings(){refreshCC();
   $("cmRateVal").textContent=fmtPct(commRate);
   const st=$("cmRateStep");st.children[0].disabled=commRate>=0.5;st.children[1].disabled=commRate<=0.01;
   const box=$("cmCats");box.innerHTML="";
@@ -2323,10 +2466,79 @@ $("dbPayAdd").onclick=()=>{const a=parseNum($("dbPayAmt").value);if(!(a>0)){$("d
 $("dbPayAll").onclick=()=>{if(dbEdit)addDebtPay(leftOf(dbEdit))};
 $("dbCall").onclick=()=>{if(dbEdit&&dbEdit.phone)location.href="tel:"+dbEdit.phone.replace(/[^\d+]/g,"")};
 $("dbDel").onclick=()=>{const d=dbEdit;if(!d)return;actionSheet({title:"למחוק את החוב?",what:d.name+" · "+money(d.amount),buttons:[{label:"מחיקה",destructive:true,fn:()=>{const snap=debts.slice();debts=debts.filter(x=>x!==d);saveDebts();closeSheets();render();banner("נמחק",()=>{debts=snap;saveDebts();render()})}}]})};
+
+/* ---------- cards carousel + card sheet ---------- */
+const CCOL={blue:"linear-gradient(135deg,#1E3A8A,#3B82F6)",black:"linear-gradient(135deg,#0F172A,#475569)",gold:"linear-gradient(135deg,#8A5A12,#E2B04A)",green:"linear-gradient(135deg,#065F46,#10B981)",red:"linear-gradient(135deg,#7F1D1D,#EF4444)",purple:"linear-gradient(135deg,#4C1D95,#A78BFA)"};
+/* what card c charges for purchases of month mk: deferred purchases of mk + its installments falling in the charge month */
+function cardBill(c,mk){
+  if(c.type==="direct"){const l=txs.filter(t=>t.date&&usesCard(t)&&cardOf(t).id===c.id&&t.date.slice(0,7)===mk).concat(plannedFor(mk).filter(t=>usesCard(t)&&cardOf(t).id===c.id));return {list:l,total:sum(l),date:""}}
+  const cm=nextMk(mk),d=+c.day||ccDay;
+  const l=txs.filter(t=>t.date&&cardOf(t).id===c.id&&((t.pay==="credit"&&t.kind!=="inc"&&t.date.slice(0,7)===mk)||(t.pay==="inst"&&t.kind!=="inc"&&t.date.slice(0,7)===cm)))
+    .concat(plannedFor(mk).filter(t=>t.pay==="credit"&&t.kind!=="inc"&&cardOf(t).id===c.id));
+  return {list:l,total:sum(l),date:cm+"-"+(d<10?"0":"")+d};
+}
+function cardFace(el,c,bill){
+  el.style.backgroundImage=c.img?'linear-gradient(180deg,rgba(0,0,0,.05) 30%,rgba(0,0,0,.55)),url("'+c.img+'")':(CCOL[c.color]||CCOL.blue);
+  el.innerHTML='<div class="cctop"><span class="ccname"></span><span class="cctype"></span></div><div class="ccchip"></div><div class="ccbot"><span class="ccnum num"></span><span class="ccbill"><span class="cbl"></span><b class="num"></b></span></div>';
+  el.querySelector(".ccname").textContent=c.name||"כרטיס";el.querySelector(".cctype").textContent=c.type==="direct"?"דיירקט":"אשראי";
+  el.querySelector(".ccnum").textContent="•••• "+(c.last4||"····");
+  if(bill){el.querySelector(".cbl").textContent=c.type==="direct"?"החודש":"חיוב ב־"+dShort(bill.date).slice(0,5);el.querySelector(".ccbill b").textContent=money(bill.total)}
+  else el.querySelector(".ccbill").hidden=true;
+}
+function renderCards(){
+  const box=$("cards"),sl=box.scrollLeft;box.innerHTML="";const mk=monthKey();
+  cards.forEach(c=>{const b=document.createElement("button");b.type="button";b.className="ccard";cardFace(b,c,cardBill(c,mk));b.onclick=()=>openCard(c);box.appendChild(b)});
+  const a=document.createElement("button");a.type="button";a.className="ccard add";a.innerHTML='<span class="ccplus">+</span><span>הוספת כרטיס</span>';a.onclick=()=>openCard(null);box.appendChild(a);
+  box.scrollLeft=sl;
+}
+let cdEdit=null,cdDraft=null;
+function drawCardPrev(){cardFace($("cdPrev"),cdDraft,null);$("cdImgDel").hidden=!cdDraft.img;
+  setSeg($("cdType"),"t",cdDraft.type);$("cdDayGrp").hidden=cdDraft.type==="direct";$("cdDayVal").textContent=cdDraft.day;
+  $("cdDayStep").children[0].disabled=cdDraft.day>=28;$("cdDayStep").children[1].disabled=cdDraft.day<=1;
+  $("cdFoot").textContent=cdDraft.type==="direct"?"כרטיס דיירקט יורד מהחשבון מיד, ולכן כל קנייה נספרת ביתרה ובתזרים של אותו חודש.":"קניות בכרטיס הזה נספרות ביתרה ובתזרים של החודש הבא, ב־"+cdDraft.day+" בחודש.";
+  document.querySelectorAll("#cdColors button").forEach(b=>b.setAttribute("aria-pressed",String(!cdDraft.img&&b.dataset.c===cdDraft.color)));
+}
+function openCard(c){
+  cdEdit=c||null;cdDraft=Object.assign({name:"",last4:"",type:"credit",day:ccDay,color:"blue",img:""},c||{});
+  $("cdTitle").textContent=c?"עריכת כרטיס":"כרטיס חדש";$("cdName").value=cdDraft.name;$("cdLast4").value=cdDraft.last4;$("cdErr").hidden=true;
+  $("cdActs").hidden=!c;
+  const sec=$("cdTxSec"),box=$("cdTx");box.innerHTML="";sec.hidden=!c;
+  if(c){const bill=cardBill(c,monthKey()),ml=new Date(cur.y,cur.m,1).toLocaleDateString("he-IL",{month:"long"});
+    $("cdTxHead").textContent=(c.type==="direct"?"חויב ב"+ml:"חיוב ב־"+dShort(bill.date)+" · קניות "+ml)+" · "+money(bill.total);
+    if(!bill.list.length){const e=document.createElement("div");e.className="cell";e.innerHTML='<span class="grow"><span class="t2">אין עדיין חיובים בכרטיס הזה</span></span>';box.appendChild(e)}
+    bill.list.sort((a,b)=>b.date.localeCompare(a.date)).forEach(t=>box.appendChild(plainRow({ic:t.kind,cls:"b-"+t.kind,t1:t.note||t.cat,t2:[dShort(t.date),t.cat,t.pay==="inst"?payText(t):"",t.planned?"קבועה, עוד לא נרשמה":""].filter(Boolean).join(" · "),t2cls:"wrap",amt:"−"+money(t.amount),
+      onclick:t.planned?null:()=>{closeSheets();openForm("edit",t)}})))}
+  drawCardPrev();openSheet("cardSheet");
+}
+(function(){const sw=$("cdColors");Object.keys(CCOL).forEach(k=>{const b=document.createElement("button");b.type="button";b.dataset.c=k;b.style.background=CCOL[k];b.setAttribute("aria-label","צבע");
+  b.onclick=()=>{cdDraft.color=k;cdDraft.img="";drawCardPrev()};sw.appendChild(b)})})();
+$("cdName").addEventListener("input",e=>{cdDraft.name=e.target.value;drawCardPrev()});
+$("cdLast4").addEventListener("input",e=>{e.target.value=e.target.value.replace(/\D/g,"").slice(0,4);cdDraft.last4=e.target.value;drawCardPrev()});
+document.querySelectorAll("#cdType button").forEach(b=>b.onclick=()=>{cdDraft.type=b.dataset.t;drawCardPrev()});
+$("cdDayStep").onclick=e=>{const d=+(e.target.closest("button")||{}).dataset?.d;if(!d)return;cdDraft.day=Math.max(1,Math.min(28,cdDraft.day+d));drawCardPrev()};
+$("cdImg").onclick=()=>{$("cdImgIn").value="";$("cdImgIn").click()};
+$("cdImgDel").onclick=()=>{cdDraft.img="";drawCardPrev()};
+/* the picked photo is cropped to card shape and shrunk, so it fits in the phone storage and the backup */
+$("cdImgIn").onchange=e=>{const f=e.target.files[0];if(!f)return;const url=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{const W=720,H=454,cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+    const r=Math.max(W/im.width,H/im.height),w=im.width*r,h=im.height*r;g.drawImage(im,(W-w)/2,(H-h)/2,w,h);
+    cdDraft.img=cv.toDataURL("image/jpeg",0.8);URL.revokeObjectURL(url);drawCardPrev()};
+  im.onerror=()=>{URL.revokeObjectURL(url);$("cdErr").textContent="לא הצלחתי לפתוח את התמונה.";$("cdErr").hidden=false};im.src=url};
+$("cdSave").onclick=()=>{
+  const err=m=>{$("cdErr").textContent=m;$("cdErr").hidden=false};
+  cdDraft.name=$("cdName").value.trim();if(!cdDraft.name)return err("תנו לכרטיס שם.");
+  if(cdDraft.last4&&cdDraft.last4.length!==4)return err("4 ספרות בדיוק, או להשאיר ריק.");
+  if(cdEdit)Object.assign(cdEdit,cdDraft);else cards.push(Object.assign({},cdDraft,{id:uid()}));
+  if(!saveCards())return err("אין מספיק מקום בטלפון. נסו תמונה קטנה יותר.");
+  closeSheets();render();banner(cdEdit?"הכרטיס עודכן":"הכרטיס נוסף");
+};
+$("cdDel").onclick=()=>{const c=cdEdit;if(!c)return;const n=txs.filter(t=>t.card===c.id).length;
+  actionSheet({title:"למחוק את הכרטיס?",what:c.name+(c.last4?" ·"+c.last4:""),msg:n?n+" תנועות משויכות לכרטיס. הן יישארו, ויעברו לכרטיס האשראי הראשון ברשימה.":"",
+    buttons:[{label:"מחיקת הכרטיס",destructive:true,fn:()=>{cards=cards.filter(x=>x!==c);txs.forEach(t=>{if(t.card===c.id)delete t.card});recs.forEach(r=>{if(r.card===c.id)delete r.card});saveCards();save();closeSheets();render();banner("הכרטיס נמחק")}}]})};
 /* ---------- cash flow forecast ---------- */
 function monthsAhead(n){const out=[];let y=+todayStr().slice(0,4),m=+todayStr().slice(5,7);for(let i=0;i<n;i++){out.push(y+"-"+pad(m));m++;if(m>12){m=1;y++}}return out}
 function flowOf(mk){
-  const all=txs.filter(t=>t.date&&t.date.slice(0,7)===mk).concat(plannedFor(mk));
+  const BI=balItems(mk),all=BI.rec.concat(BI.pl);
   const k=x=>sum(all.filter(t=>t.kind===x));
   const inc=k("inc"),exp=k("exp")+all.reduce((s,t)=>s+commDue(t),0),si=k("sav")+k("inv"),maa=Math.max(dueOf(all),k("maa"));
   return {mk,all,inc,exp,si,maa,net:inc-exp-si-maa};
@@ -2551,7 +2763,7 @@ async function deliver(blob,name){
 }
 
 $("backupBtn").onclick=async()=>{
-  const data={app:"kis",version:5,exported:new Date().toISOString(),rate,txs,recs,life,pending:pend,debts};
+  const data={app:"kis",version:5,exported:new Date().toISOString(),rate,txs,recs,life,pending:pend,debts,cards};
   const r=await deliver(new Blob([JSON.stringify(data,null,1)],{type:"application/json"}),"kis-backup-"+todayStr()+".json");
   if(r==="ok"){try{localStorage.setItem("kis-last-backup",String(Date.now()))}catch(e){}
     refreshSettings();updateBadges();
@@ -2567,7 +2779,7 @@ $("restoreFile").onchange=async e=>{
     if(!Array.isArray(list))throw 0;
     const okTx=t=>t&&KINDS[t.kind]&&typeof t.amount==="number"&&t.amount>0&&t.cat;
     const clean=list.filter(t=>okTx(t)&&/^\d{4}-\d{2}-\d{2}$/.test(t.date)).map(t=>{
-      const o={id:String(t.id||uid()),kind:t.kind,amount:t.amount,cat:String(t.cat),pay:PAYS[t.pay]?t.pay:null,inst:t.pay==="inst"?(+t.inst||2):null,note:String(t.note||""),date:t.date,created:+t.created||Date.now()};if(t.noMaaser)o.noMaaser=true;if(o.pay==="inst"&&t.instGroup&&+t.instNo>0&&+t.instTotal>0){o.instGroup=String(t.instGroup);o.instNo=+t.instNo;o.instTotal=+t.instTotal;o.instBuy=/^\d{4}-\d{2}-\d{2}$/.test(t.instBuy)?t.instBuy:t.date;o.instDay=Math.min(31,Math.max(1,+t.instDay||+t.date.slice(8,10)))}if(t.kind==="inv"&&+t.usd>0&&+t.fx>0){o.usd=+t.usd;o.fx=+t.fx;if(/^\d{4}-\d{2}-\d{2}$/.test(t.fxDate))o.fxDate=t.fxDate}if(t.mr===0.2)o.mr=0.2;if(o.kind==="inc"&&+t.comm>0&&+t.comm<=0.5){o.comm=+t.comm;if(t.commPaid)o.commPaid=String(t.commPaid)}if(Array.isArray(t.commFor))o.commFor=t.commFor.map(String);
+      const o={id:String(t.id||uid()),kind:t.kind,amount:t.amount,cat:String(t.cat),pay:PAYS[t.pay]?t.pay:null,inst:t.pay==="inst"?(+t.inst||2):null,note:String(t.note||""),date:t.date,created:+t.created||Date.now()};if(t.noMaaser)o.noMaaser=true;if(o.pay==="inst"&&t.instGroup&&+t.instNo>0&&+t.instTotal>0){o.instGroup=String(t.instGroup);o.instNo=+t.instNo;o.instTotal=+t.instTotal;o.instBuy=/^\d{4}-\d{2}-\d{2}$/.test(t.instBuy)?t.instBuy:t.date;o.instDay=Math.min(31,Math.max(1,+t.instDay||+t.date.slice(8,10)))}if(t.kind==="inv"&&+t.usd>0&&+t.fx>0){o.usd=+t.usd;o.fx=+t.fx;if(/^\d{4}-\d{2}-\d{2}$/.test(t.fxDate))o.fxDate=t.fxDate}if(t.mr===0.2)o.mr=0.2;if(o.kind==="inc"&&+t.comm>0&&+t.comm<=0.5){o.comm=+t.comm;if(t.commPaid)o.commPaid=String(t.commPaid)}if(Array.isArray(t.commFor))o.commFor=t.commFor.map(String);if(t.card&&(o.pay==="credit"||o.pay==="inst"))o.card=String(t.card);
       if(t.recId){o.recId=String(t.recId);o.recMonth=/^\d{4}-\d{2}$/.test(t.recMonth)?t.recMonth:t.date.slice(0,7)}
       return o});
     const rl=(d&&Array.isArray(d.recs)?d.recs:[]).filter(r=>okTx(r)&&r.id&&/^\d{4}-\d{2}$/.test(r.start)&&+r.day>=1&&+r.day<=31).map(r=>({
@@ -2577,7 +2789,7 @@ $("restoreFile").onchange=async e=>{
       amount:+x.amount>0?+x.amount:0,freq:x.freq==="y"?"y":"m",date:/^\d{4}-\d{2}-\d{2}$/.test(x.date)?x.date:"",remind:+x.remind||30,note:String(x.note||""),src:x.src?String(x.src):undefined}));
     actionSheet({title:"לשחזר מהגיבוי?",what:clean.length+" תנועות · "+rl.length+" קבועות"+(ll.length?" · "+ll.length+" ביטוחים, מנויים ותזכורות":"")+(d.exported?" · "+new Date(d.exported).toLocaleDateString("he-IL"):""),
       msg:"השחזור יחליף את "+txs.length+" התנועות שנמצאות עכשיו בטלפון.",
-      buttons:[{label:"שחזור והחלפה",destructive:true,fn:()=>{txs=clean;recs=rl;if(Array.isArray(d.life)){life=ll;saveLife()}if(Array.isArray(d.debts)){const ok=x=>/^\d{4}-\d{2}-\d{2}$/.test(x)?x:"";debts=d.debts.filter(x=>x&&x.name&&+x.amount>0).map(x=>({id:String(x.id||uid()),created:+x.created||Date.now(),dir:x.dir==="owe"?"owe":"owed",amount:+x.amount,name:String(x.name),phone:String(x.phone||""),note:String(x.note||""),date:ok(x.date),due:ok(x.due),pays:(Array.isArray(x.pays)?x.pays:[]).filter(p=>p&&+p.amount>0).map(p=>({amount:+p.amount,date:ok(p.date)||todayStr()}))}));saveDebts()}if(Array.isArray(d.pending)){pend=d.pending.filter(x=>x&&x.name).map(x=>({id:String(x.id||uid()),created:+x.created||Date.now(),name:String(x.name),amount:+x.amount>0?+x.amount:0,cat:String(x.cat||"אחר"),pri:[1,2,3].includes(+x.pri)?+x.pri:2,date:/^\d{4}-\d{2}-\d{2}$/.test(x.date)?x.date:"",note:String(x.note||"")}));savePend()}if(d.rate===0.2||d.rate===0.1)setRate(d.rate);save();genRecurring(true);render();banner("השחזור הושלם: "+txs.length+" תנועות")}}]});
+      buttons:[{label:"שחזור והחלפה",destructive:true,fn:()=>{txs=clean;recs=rl;if(Array.isArray(d.life)){life=ll;saveLife()}if(Array.isArray(d.cards)&&d.cards.length){cards=d.cards.filter(c=>c&&c.id).map(c=>({id:String(c.id),name:String(c.name||"כרטיס"),last4:String(c.last4||"").replace(/\D/g,"").slice(0,4),type:c.type==="direct"?"direct":"credit",day:Math.min(28,Math.max(1,+c.day||2)),color:CCOL[c.color]?c.color:"blue",img:typeof c.img==="string"&&c.img.startsWith("data:image/")?c.img:""}));saveCards()}if(Array.isArray(d.debts)){const ok=x=>/^\d{4}-\d{2}-\d{2}$/.test(x)?x:"";debts=d.debts.filter(x=>x&&x.name&&+x.amount>0).map(x=>({id:String(x.id||uid()),created:+x.created||Date.now(),dir:x.dir==="owe"?"owe":"owed",amount:+x.amount,name:String(x.name),phone:String(x.phone||""),note:String(x.note||""),date:ok(x.date),due:ok(x.due),pays:(Array.isArray(x.pays)?x.pays:[]).filter(p=>p&&+p.amount>0).map(p=>({amount:+p.amount,date:ok(p.date)||todayStr()}))}));saveDebts()}if(Array.isArray(d.pending)){pend=d.pending.filter(x=>x&&x.name).map(x=>({id:String(x.id||uid()),created:+x.created||Date.now(),name:String(x.name),amount:+x.amount>0?+x.amount:0,cat:String(x.cat||"אחר"),pri:[1,2,3].includes(+x.pri)?+x.pri:2,date:/^\d{4}-\d{2}-\d{2}$/.test(x.date)?x.date:"",note:String(x.note||"")}));savePend()}if(d.rate===0.2||d.rate===0.1)setRate(d.rate);save();genRecurring(true);render();banner("השחזור הושלם: "+txs.length+" תנועות")}}]});
   }catch(err){banner("הקובץ הזה הוא לא גיבוי של הכיס החודשי")}
 };
 
