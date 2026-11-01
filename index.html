@@ -375,6 +375,11 @@ button.barrow:active{background:var(--fill-press)}
 .cvsum{text-align:right}
 .cvsum .big{font-size:32px}
 
+.bbcap{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.bbcap .cap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;color:var(--label2)}
+.bbsub{font-size:12px;color:var(--label2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl}
+.bbsub.neg-t{color:var(--red-text)}
+
 /* ===== theme presets: html[data-skin] picks colors; the glass level sliders set --glass, --glass-strong, --sheet-cell, --ov and --glass-blur inline on <html> ===== */
 html[data-skin="ocean"]{--bg:#06141F;--blob-bordeaux:#1C6FB8;--blob-amber:#38C7D9;--blob-purple:#2B3FA8;--blob-teal:#14A37F;
   --tint:#7FE3FF;--bar:rgba(6,20,31,.4);--sw-bg:rgba(14,36,56,.94);--badge-ring:rgba(6,20,31,.85);--plus-glow:rgba(56,199,217,.42);
@@ -790,6 +795,11 @@ html[data-skin="clean"] .search{background:var(--cell);box-shadow:var(--shadow)}
 .cvsum{text-align:right}
 .cvsum .big{font-size:32px}
 
+.bbcap{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.bbcap .cap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14px;color:var(--label2)}
+.bbsub{font-size:12px;color:var(--label2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl}
+.bbsub.neg-t{color:var(--red-text)}
+
 /* ===== "clean" skin: digital-bank look on top of the classic sheet ===== */
 html[data-skin="clean"]{--bg:#F3F5F9;--cell:#FFFFFF;--sheet:#F3F5F9;--sheet-cell:#FFFFFF;
   --label:#0F172A;--label2:rgba(15,23,42,.58);--label3:rgba(15,23,42,.32);--sep:rgba(15,23,42,.08);--fill:rgba(15,23,42,.05);--fill-press:rgba(15,23,42,.05);
@@ -903,7 +913,7 @@ window.__kisLook=(function(){
 
     <div class="card balance balbar" id="balBar">
       <button type="button" class="bbhead" id="balToggle" aria-expanded="false" aria-controls="balDet">
-        <span class="cap" id="balCap">יתרה פנויה החודש</span>
+        <span class="bbcap"><span class="cap" id="balCap">יתרה פנויה החודש</span><span class="bbsub num" id="balAfter" hidden></span></span>
         <span class="big num" id="bal">0.00</span>
         <svg class="i bbchev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
       </button>
@@ -1254,7 +1264,7 @@ window.__kisLook=(function(){
       <p class="sf" id="backupInfo"></p>
       <input type="file" id="restoreFile" accept=".json,application/json" hidden>
     </div>
-    <p class="hintline">גרסה 28</p>
+    <p class="hintline">גרסה 29</p>
   </section>
 </main>
 
@@ -1774,6 +1784,11 @@ function render(){
    if(ccMode==="charge"){if(inM.length)parts.push("כולל חיובי אשראי של "+money(sum(inM))+" ב"+lbl(mk)+" (קניות "+lbl(prevMk(mk))+")");
      if(nxt.length)parts.push("קניות אשראי של "+lbl(mk)+" ("+money(sum(nxt))+") ירדו ב"+lbl(nextMk(mk)))}
    $("balCC").hidden=!parts.length;$("balCC").textContent=parts.join(" · ")}
+  /* what is left after the next card charge: this month's credit purchases (and planned credit standing orders) leave on the cards' next charge day */
+  {const nm=nextMk(mk),cc=cards.filter(c=>c.type!=="direct"),on=ccMode==="charge"&&mk>=CC_FROM;
+   const bills=on?cc.map(c=>({c,b:cardBill(c,mk)})).filter(x=>x.b.total>0):[],upT=bills.reduce((s,x)=>s+x.b.total,0),el=$("balAfter");el.hidden=!(upT>0);
+   if(upT>0){const days=[...new Set(bills.map(x=>+x.c.day||ccDay))].sort((a,b)=>a-b);const after=bal-upT;
+     el.textContent="נשאר אחרי חיוב "+days.map(d=>(d<10?"0":"")+d).join("/")+"."+nm.slice(5,7)+": "+(after<0?"−":"")+money(Math.abs(after));el.classList.toggle("neg-t",after<0)}}
   lastBal=bal;renderHello();renderRecent(items);renderLife();renderPend();renderComm();renderDebts();renderCards();if(view==="card")renderCardView();
   {const pa=txs.reduce((s,t)=>s+commDue(t),0),ab=$("alerts");
    if(pa){$("alertSec").hidden=false;ab.insertBefore(plainRow({ic:"percent",cls:"b-exp",t1:"עמלות שממתינות לתחנה",t2:txs.filter(t=>commDue(t)).length+" משלוחים · הקישו כדי לסמן תשלום",amt:money(pa),onclick:()=>showView("comm","home")}),ab.firstChild)}}
