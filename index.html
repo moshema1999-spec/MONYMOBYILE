@@ -1144,6 +1144,14 @@ window.__kisLook=(function(){
       <button class="chev" id="cvNext" aria-label="החיוב הבא"><svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
     </div>
     <div class="card balance cvsum"><div class="cap" id="cvCap"></div><div class="big num" id="cvTot">0.00</div><div class="cap" id="cvSub"></div></div>
+    <section class="sec" id="cvSync" hidden>
+      <h2 class="sh">התאמה לבנק</h2>
+      <div class="group">
+        <div class="cell"><span class="grow"><span class="t2 wrap" id="cvSyncTxt"></span></span></div>
+        <div class="cell" id="cvSyncIn"><span class="lbl">ירד בפועל</span><input class="text num" id="cvSyncAmt" inputmode="decimal" placeholder="הסכום מהבנק" autocomplete="off"><button type="button" class="navtext trail" id="cvSyncBtn">רישום</button></div>
+        <button type="button" class="cell" id="cvSyncDone" hidden><span class="grow"><span class="t1" id="cvSyncDoneT"></span><span class="t2">לחצו לעריכה</span></span><span class="amt num" id="cvSyncDoneA"></span></button>
+      </div>
+    </section>
     <div id="cvList" class="recent"></div>
   </section>
 
@@ -1264,7 +1272,7 @@ window.__kisLook=(function(){
       <p class="sf" id="backupInfo"></p>
       <input type="file" id="restoreFile" accept=".json,application/json" hidden>
     </div>
-    <p class="hintline">גרסה 29</p>
+    <p class="hintline">גרסה 30</p>
   </section>
 </main>
 
@@ -1526,7 +1534,7 @@ window.__kisLook=(function(){
 <script>
 (function(){
 const KINDS={
-  exp:{label:"הוצאה",plural:"הוצאות",sign:"−",cats:["מזון וסופר","דיור ושכירות","חשבונות","תחבורה ודלק","בילויים ומסעדות","קניות וביגוד","בריאות","חינוך וילדים","עמלות","אחר"]},
+  exp:{label:"הוצאה",plural:"הוצאות",sign:"−",cats:["מזון וסופר","דיור ושכירות","חשבונות","תחבורה ודלק","בילויים ומסעדות","קניות וביגוד","בריאות","חינוך וילדים","עמלות","חיוב אשראי","אחר"]},
   inc:{label:"הכנסה",plural:"הכנסות",sign:"+",cats:["משכורת","יין","דרייבר","עבודה נוספת","החזרים","מתנה","אחר"]},
   sav:{label:"חיסכון",plural:"חיסכון",sign:"",cats:["קרן חירום","חיסכון למטרה","פיקדון בבנק","חיסכון לילדים","קופת גמל","אחר"]},
   inv:{label:"השקעה",plural:"השקעות",sign:"",cats:["מניות","קרן סל / נאמנות","קרן השתלמות","קריפטו","נדל״ן","אחר"]},
@@ -2617,6 +2625,15 @@ function renderCardView(){
     list=txs.filter(t=>mine(t)&&t.date<=todayStr());
     $("cvCap").textContent="כל התנועות בכרטיס";$("cvTot").textContent=money(sum(list));$("cvSub").textContent=list.length+" תנועות";
   }
+  /* transition: the charge of CC_FROM covers purchases already counted by purchase date. Recording the real bank amount
+     as one bank charge in that month makes the month match the bank exactly, without touching the earlier month */
+  {const show=cvMode==="bill"&&c.type!=="direct"&&cvMk===CC_FROM&&ccMode==="charge";$("cvSync").hidden=!show;
+   if(show){const bd=cvMk+"-"+((+c.day||ccDay)<10?"0":"")+(+c.day||ccDay),st=txs.find(t=>t.settle&&t.card===c.id&&t.date.slice(0,7)===cvMk);
+     $("cvSyncTxt").textContent="הקניות של החיוב הזה כבר נספרו ב"+new Date(+prevMk(cvMk).slice(0,4),+prevMk(cvMk).slice(5,7)-1,1).toLocaleDateString("he-IL",{month:"long"})+" לפי תאריך הקנייה. כדי ש"+new Date(+cvMk.slice(0,4),+cvMk.slice(5,7)-1,1).toLocaleDateString("he-IL",{month:"long"})+" יתאים לבנק, רשמו כאן את הסכום שירד בפועל ב־"+dShort(bd)+". הוא ייספר רק בחודש הזה.";
+     $("cvSyncIn").hidden=!!st;$("cvSyncDone").hidden=!st;
+     if(st){$("cvCap").textContent="ירד מהחשבון ב־"+dShort(st.date)+" · לפי הבנק";$("cvTot").textContent=money(st.amount);
+       $("cvSub").textContent="באפליקציה רשומות לחיוב הזה "+list.length+" תנועות בסך "+money(sum(list));
+       $("cvSyncDoneT").textContent="נרשם חיוב בפועל ב־"+dShort(st.date);$("cvSyncDoneA").textContent="−"+money(st.amount);$("cvSyncDone").onclick=()=>openForm("edit",st)}}}
   const box=$("cvList");box.innerHTML="";
   if(!list.length){const e=document.createElement("div");e.className="empty";e.innerHTML="<b>אין תנועות</b><span>"+(cvMode==="bill"?"נסו חיוב אחר בחיצים.":"עוד לא נרשמו תנועות בכרטיס הזה.")+"</span>";box.appendChild(e);return}
   const g={};list.slice().sort((a,b)=>b.date.localeCompare(a.date)||(b.created||0)-(a.created||0)).forEach(t=>(g[t.date]=g[t.date]||[]).push(t));
@@ -2630,6 +2647,10 @@ document.querySelectorAll("#cvSeg button").forEach(b=>b.onclick=()=>{cvMode=b.da
 $("cvPrev").onclick=()=>{cvMk=prevMk(cvMk);renderCardView()};
 $("cvNext").onclick=()=>{cvMk=nextMk(cvMk);renderCardView()};
 $("cvEdit").onclick=()=>{if(cvCard)openCard(cvCard)};
+$("cvSyncBtn").onclick=()=>{const c=cvCard,a=parseNum($("cvSyncAmt").value);if(!c||!(a>0)){banner("הזינו את הסכום שירד מהבנק");return}
+  const d=+c.day||ccDay,date=cvMk+"-"+(d<10?"0":"")+d;
+  txs.push({id:uid(),kind:"exp",amount:Math.round(a*100)/100,cat:"חיוב אשראי",pay:"bank",inst:null,note:"חיוב "+(c.name||"כרטיס")+(c.last4?" ·"+c.last4:"")+" · "+dShort(date),date,created:Date.now(),settle:true,card:c.id});
+  save();$("cvSyncAmt").value="";render();banner("נרשם חיוב של "+money(a)+" ב־"+dShort(date))};
 /* ---------- cash flow forecast ---------- */
 function monthsAhead(n){const out=[];let y=+todayStr().slice(0,4),m=+todayStr().slice(5,7);for(let i=0;i<n;i++){out.push(y+"-"+pad(m));m++;if(m>12){m=1;y++}}return out}
 function flowOf(mk){
@@ -2874,7 +2895,7 @@ $("restoreFile").onchange=async e=>{
     if(!Array.isArray(list))throw 0;
     const okTx=t=>t&&KINDS[t.kind]&&typeof t.amount==="number"&&t.amount>0&&t.cat;
     const clean=list.filter(t=>okTx(t)&&/^\d{4}-\d{2}-\d{2}$/.test(t.date)).map(t=>{
-      const o={id:String(t.id||uid()),kind:t.kind,amount:t.amount,cat:String(t.cat),pay:PAYS[t.pay]?t.pay:null,inst:t.pay==="inst"?(+t.inst||2):null,note:String(t.note||""),date:t.date,created:+t.created||Date.now()};if(t.noMaaser)o.noMaaser=true;if(o.pay==="inst"&&t.instGroup&&+t.instNo>0&&+t.instTotal>0){o.instGroup=String(t.instGroup);o.instNo=+t.instNo;o.instTotal=+t.instTotal;o.instBuy=/^\d{4}-\d{2}-\d{2}$/.test(t.instBuy)?t.instBuy:t.date;o.instDay=Math.min(31,Math.max(1,+t.instDay||+t.date.slice(8,10)))}if(t.kind==="inv"&&+t.usd>0&&+t.fx>0){o.usd=+t.usd;o.fx=+t.fx;if(/^\d{4}-\d{2}-\d{2}$/.test(t.fxDate))o.fxDate=t.fxDate}if(t.mr===0.2)o.mr=0.2;if(o.kind==="inc"&&+t.comm>0&&+t.comm<=0.5){o.comm=+t.comm;if(t.commPaid)o.commPaid=String(t.commPaid)}if(Array.isArray(t.commFor))o.commFor=t.commFor.map(String);if(t.card&&(o.pay==="credit"||o.pay==="inst"))o.card=String(t.card);if(+t.ccShift===2&&o.pay==="credit")o.ccShift=2;
+      const o={id:String(t.id||uid()),kind:t.kind,amount:t.amount,cat:String(t.cat),pay:PAYS[t.pay]?t.pay:null,inst:t.pay==="inst"?(+t.inst||2):null,note:String(t.note||""),date:t.date,created:+t.created||Date.now()};if(t.noMaaser)o.noMaaser=true;if(o.pay==="inst"&&t.instGroup&&+t.instNo>0&&+t.instTotal>0){o.instGroup=String(t.instGroup);o.instNo=+t.instNo;o.instTotal=+t.instTotal;o.instBuy=/^\d{4}-\d{2}-\d{2}$/.test(t.instBuy)?t.instBuy:t.date;o.instDay=Math.min(31,Math.max(1,+t.instDay||+t.date.slice(8,10)))}if(t.kind==="inv"&&+t.usd>0&&+t.fx>0){o.usd=+t.usd;o.fx=+t.fx;if(/^\d{4}-\d{2}-\d{2}$/.test(t.fxDate))o.fxDate=t.fxDate}if(t.mr===0.2)o.mr=0.2;if(o.kind==="inc"&&+t.comm>0&&+t.comm<=0.5){o.comm=+t.comm;if(t.commPaid)o.commPaid=String(t.commPaid)}if(Array.isArray(t.commFor))o.commFor=t.commFor.map(String);if(t.card&&(o.pay==="credit"||o.pay==="inst"||t.settle))o.card=String(t.card);if(t.settle)o.settle=true;if(+t.ccShift===2&&o.pay==="credit")o.ccShift=2;
       if(t.recId){o.recId=String(t.recId);o.recMonth=/^\d{4}-\d{2}$/.test(t.recMonth)?t.recMonth:t.date.slice(0,7)}
       return o});
     const rl=(d&&Array.isArray(d.recs)?d.recs:[]).filter(r=>okTx(r)&&r.id&&/^\d{4}-\d{2}$/.test(r.start)&&+r.day>=1&&+r.day<=31).map(r=>({
@@ -2981,6 +3002,11 @@ try{const f=localStorage.getItem("kis-fix-oct");if(f!=="undone"){let ch=0;
   if(f==="1")txs.forEach(t=>{if(t.instGroup&&/^ccg\d+$/.test(t.instGroup)&&t.date.slice(8)==="02"){t.date=prevMk(t.date.slice(0,7))+"-01";t.instDay=1;ch++}
     if(t.ccShift&&/\(טרם נקלטה\)$/.test(t.note||"")&&t.date.slice(0,7)==="2026-10"){delete t.ccShift;ch++}});
   if(ch)save();localStorage.setItem("kis-fix-oct","undone")}}catch(e){}
+/* v30: from November on, the imported installments sit on their real charge date (the 2nd of the following month),
+   because the November bank charge already contains that month's payment. October's rows stay as they are */
+try{if(localStorage.getItem("kis-fix-inst-nov")!=="1"){let ch=0;
+  txs.forEach(t=>{if(t.instGroup&&/^ccg\d+$/.test(t.instGroup)&&t.date>="2026-11-01"&&t.date.slice(8)==="01"){t.date=nextMk(t.date.slice(0,7))+"-02";t.instDay=2;ch++}});
+  if(ch)save();localStorage.setItem("kis-fix-inst-nov","1")}}catch(e){}
 applyTheme(getTheme());
 genRecurring();
 render();onScroll();
