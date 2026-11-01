@@ -1220,7 +1220,7 @@ window.__kisLook=(function(){
       <p class="sf" id="backupInfo"></p>
       <input type="file" id="restoreFile" accept=".json,application/json" hidden>
     </div>
-    <p class="hintline">גרסה 26</p>
+    <p class="hintline">גרסה 27</p>
   </section>
 </main>
 
@@ -1509,12 +1509,16 @@ const usesCard=t=>(t.pay==="credit"||t.pay==="inst")&&t.kind!=="inc";
 const isCC=t=>t.pay==="credit"&&t.kind!=="inc"&&cardOf(t).type!=="direct";
 /* the month the card charges a purchase: next month, or the one after when t.ccShift is 2 (bought after the cycle closed) */
 const billMk=t=>{let m=nextMk(t.date.slice(0,7));if(+t.ccShift===2)m=nextMk(m);return m};
-const chargeMk=t=>ccMode==="charge"&&isCC(t)?billMk(t):t.date.slice(0,7);
+/* counting by charge date starts with purchases of CC_FROM; earlier months stay by purchase date, as they were recorded */
+const CC_FROM="2026-11";
+const deferred=t=>ccMode==="charge"&&isCC(t)&&t.date.slice(0,7)>=CC_FROM;
+const chargeMk=t=>deferred(t)?billMk(t):t.date.slice(0,7);
 const chargeDate=t=>{const d=+cardOf(t).day||ccDay;return billMk(t)+"-"+(d<10?"0":"")+d};
 /* everything that counts toward month mk in the balance: recorded + planned, by charge month */
 function balItems(mk){
   const rec=txs.filter(t=>t.date&&chargeMk(t)===mk);
-  const pl=ccMode==="charge"?plannedFor(mk).filter(t=>!isCC(t)).concat(plannedFor(prevMk(mk)).filter(isCC)):plannedFor(mk);
+  const pm=prevMk(mk);
+  const pl=ccMode==="charge"?plannedFor(mk).filter(t=>!isCC(t)||mk<CC_FROM).concat(pm>=CC_FROM?plannedFor(pm).filter(isCC):[]):plannedFor(mk);
   return {rec,pl};
 }
 const rateName=x=>x===0.2?"חומש 20%":"מעשר 10%";
@@ -1662,7 +1666,7 @@ document.addEventListener("pointerdown",e=>{if(openSw&&!openSw.contains(e.target
 function monthKey(){return cur.y+"-"+pad(cur.m+1)}
 function sum(list){return list.reduce((s,t)=>s+t.amount,0)}
 /* the latest month you can move to: this month, or later when future payments (installments) exist */
-function maxMonthKey(){let k=todayStr().slice(0,7);txs.forEach(t=>{if(t.date&&t.date.slice(0,7)>k)k=t.date.slice(0,7);if(t.date&&isCC(t)&&ccMode==="charge"&&chargeMk(t)>k)k=chargeMk(t)});
+function maxMonthKey(){let k=todayStr().slice(0,7);txs.forEach(t=>{if(t.date&&t.date.slice(0,7)>k)k=t.date.slice(0,7);if(t.date&&deferred(t)&&chargeMk(t)>k)k=chargeMk(t)});
   if(recs.length){let [y,m]=todayStr().split("-").map(Number);m+=12;while(m>12){m-=12;y++}const r12=y+"-"+pad(m);if(r12>k)k=r12}
   return k}
 /* recurring transactions planned for month mk that are not recorded yet (their day is still ahead) */
@@ -1726,7 +1730,7 @@ function render(){
   const mlabel=new Date(cur.y,cur.m,1).toLocaleDateString("he-IL",{month:"long",year:"numeric"});
   $("panelMonth").textContent=mlabel;
   $("balCap").textContent=isNowM(mk)?"יתרה פנויה החודש":"יתרה פנויה ב"+new Date(cur.y,cur.m,1).toLocaleDateString("he-IL",{month:"long"});
-  {const inM=bItems.filter(t=>isCC(t)&&t.date.slice(0,7)!==mk),nxt=items.filter(t=>isCC(t)&&!t.planned);
+  {const inM=bItems.filter(t=>deferred(t)&&t.date.slice(0,7)!==mk),nxt=items.filter(t=>deferred(t)&&!t.planned);
    const lbl=x=>new Date(+x.slice(0,4),+x.slice(5,7)-1,1).toLocaleDateString("he-IL",{month:"long"});
    const parts=[];
    if(ccMode==="charge"){if(inM.length)parts.push("כולל חיובי אשראי של "+money(sum(inM))+" ב"+lbl(mk)+" (קניות "+lbl(prevMk(mk))+")");
@@ -1796,7 +1800,7 @@ function render(){
       r.querySelector(".t1").textContent=t.note||t.cat;
       const isRec=t.recId&&recs.some(x=>x.id===t.recId);
       if(t.usd){const fl=document.createElement("span");fl.className="t2 num-mixed";fl.textContent=(invCur==="usd"?money(t.amount)+" בשקלים":usdText(t.usd))+" · שער "+(+t.fx).toFixed(3);r.querySelector(".grow").appendChild(fl)}
-      r.querySelector(".t2").textContent=[t.note?t.cat:KINDS[t.kind].label,payText(t),isRec?"קבועה":"",ccMode==="charge"&&isCC(t)&&!t.planned?"יחויב "+dShort(chargeDate(t)):"",commOf(t)?"עמלה "+money(commOf(t))+(commIsPaid(t)?" · שולמה":" · ממתינה"):"",t.kind==="inc"&&!t.noMaaser?(rateOf(t)===0.2?"חומש ":"מעשר ")+money(netOf(t)*rateOf(t)):""].filter(Boolean).join(" · ");
+      r.querySelector(".t2").textContent=[t.note?t.cat:KINDS[t.kind].label,payText(t),isRec?"קבועה":"",deferred(t)&&!t.planned?"יחויב "+dShort(chargeDate(t)):"",commOf(t)?"עמלה "+money(commOf(t))+(commIsPaid(t)?" · שולמה":" · ממתינה"):"",t.kind==="inc"&&!t.noMaaser?(rateOf(t)===0.2?"חומש ":"מעשר ")+money(netOf(t)*rateOf(t)):""].filter(Boolean).join(" · ");
       const a=r.querySelector(".amt");a.textContent=t.usd&&invCur==="usd"?usdText(t.usd):KINDS[t.kind].sign+money(t.amount);if(t.kind==="inc")a.classList.add("inc");
       r.setAttribute("aria-label",KINDS[t.kind].label+", "+t.cat+", "+money(t.amount)+". לעריכה");
       r.onclick=()=>openForm("edit",t);
@@ -1910,7 +1914,7 @@ function syncRows(){
   $("payVal").textContent=pay?PAYS[pay]:"ללא";
   {const show=(pay==="credit"||pay==="inst")&&kind!=="inc"&&cards.length>0;$("cardRow").hidden=!show;
    if(show){if(!cards.some(c=>c.id===fcard))fcard=defaultCardId();const c=cards.find(x=>x.id===fcard);$("cardVal").textContent=c?c.name+(c.last4?" ·"+c.last4:""):"";}
-   const c=cards.find(x=>x.id===fcard),sh=pay==="credit"&&kind!=="inc"&&mode!=="rec"&&c&&c.type!=="direct";$("shiftRow").hidden=!sh;
+   const c=cards.find(x=>x.id===fcard),sh=pay==="credit"&&kind!=="inc"&&mode!=="rec"&&c&&c.type!=="direct"&&ccMode==="charge"&&($("dateIn").value||todayStr()).slice(0,7)>=CC_FROM;$("shiftRow").hidden=!sh;
    if(sh){setSeg($("shiftSeg"),"s",String(fshift));const d=$("dateIn").value||todayStr();const tt={date:d,ccShift:fshift,card:fcard};$("shiftSub").textContent=dShort(chargeDate(tt))+(fshift===2?" · נקנה אחרי סגירת המחזור":"")}}
   const isUsdNow=kind==="inv"&&fcur==="usd";
   if(pay==="inst"&&(isUsdNow||mode==="rec"))pay=null;
@@ -2396,7 +2400,7 @@ function renderComm(){
   $("hv-comm").textContent=pa?money(pa):"";$("hs-comm").textContent=pa?pendAll.length+" ממתינות לתשלום":"כמה עמלה יורדת מכל משלוח";
 }
 function refreshCC(){setSeg($("ccSeg"),"m",ccMode);
-  $("ccFoot").textContent=ccMode==="charge"?"קנייה בכרטיס אשראי נספרת ביתרה ובתזרים של החודש הבא, ביום החיוב של אותו כרטיס. כרטיס דיירקט נספר באותו חודש. את הכרטיסים ואת יום החיוב שלהם עורכים בלחיצה על הכרטיס בדף הבית.":"כל תנועה נספרת בחודש שבו נעשתה, גם אם האשראי יורד מהבנק רק בחודש הבא."}
+  $("ccFoot").textContent=ccMode==="charge"?"מנובמבר 2026: קנייה בכרטיס אשראי נספרת ביתרה ובתזרים של החודש הבא, ביום החיוב של אותו כרטיס. כרטיס דיירקט נספר באותו חודש. אוקטובר ומה שלפניו נשארים לפי תאריך הקנייה. את הכרטיסים ואת יום החיוב שלהם עורכים בלחיצה על הכרטיס בדף הבית.":"כל תנועה נספרת בחודש שבו נעשתה, גם אם האשראי יורד מהבנק רק בחודש הבא."}
 document.querySelectorAll("#ccSeg button").forEach(b=>b.onclick=()=>{ccMode=b.dataset.m;try{localStorage.setItem("kis-cc-mode",ccMode)}catch(e){}refreshCC();render()});
 function refreshCommSettings(){refreshCC();
   $("cmRateVal").textContent=fmtPct(commRate);
@@ -2888,12 +2892,11 @@ document.querySelectorAll("#filterSeg button").forEach(b=>b.onclick=()=>{filter=
 /* record due recurring transactions whenever the app comes back to the screen */
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&genRecurring())render()});
 
-/* one-time fix (v26) for the October import: its installments were dated the 1st of the purchase month, but the card
-   charges them on the 2nd of the following month; and the 4 purchases marked "(טרם נקלטה)" were not part of the 02.11 charge */
-try{if(localStorage.getItem("kis-fix-oct")!=="1"){let ch=0;
-  txs.forEach(t=>{if(t.instGroup&&/^ccg\d+$/.test(t.instGroup)&&t.date.slice(8)==="01"){t.date=nextMk(t.date.slice(0,7))+"-02";t.instDay=2;ch++}
-    if(t.pay==="credit"&&/\(טרם נקלטה\)$/.test(t.note||"")&&t.date.slice(0,7)==="2026-10"&&!t.ccShift){t.ccShift=2;ch++}});
-  if(ch)save();localStorage.setItem("kis-fix-oct","1")}}catch(e){}
+/* v27: October stays exactly as it was recorded. Undo the one-time change v26 made to the October import, if it ran */
+try{const f=localStorage.getItem("kis-fix-oct");if(f!=="undone"){let ch=0;
+  if(f==="1")txs.forEach(t=>{if(t.instGroup&&/^ccg\d+$/.test(t.instGroup)&&t.date.slice(8)==="02"){t.date=prevMk(t.date.slice(0,7))+"-01";t.instDay=1;ch++}
+    if(t.ccShift&&/\(טרם נקלטה\)$/.test(t.note||"")&&t.date.slice(0,7)==="2026-10"){delete t.ccShift;ch++}});
+  if(ch)save();localStorage.setItem("kis-fix-oct","undone")}}catch(e){}
 applyTheme(getTheme());
 genRecurring();
 render();onScroll();
