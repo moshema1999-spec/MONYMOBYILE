@@ -401,6 +401,14 @@ button.barrow:active{background:var(--fill-press)}
 .flows.cardlines:empty{display:none}
 .cardline .cn{flex:1}
 
+.cerow{gap:8px;padding-inline-end:8px}
+.cename{flex:1;min-width:0;border:0;background:none;text-align:right;color:var(--label);font:inherit;display:flex;flex-direction:column;gap:2px;padding:4px 0}
+.cename .t2{font-size:13px;color:var(--label2)}
+.ceord{display:flex;gap:2px;flex:none}
+.ceord button{width:34px;height:34px;border:0;border-radius:10px;background:var(--fill);color:var(--tint);display:grid;place-items:center}
+.ceord button:disabled{color:var(--label3);opacity:.5}
+.ceord svg{width:16px;height:16px;stroke-width:2.4}
+
 /* ===== theme presets: html[data-skin] picks colors; the glass level sliders set --glass, --glass-strong, --sheet-cell, --ov and --glass-blur inline on <html> ===== */
 html[data-skin="ocean"]{--bg:#06141F;--blob-bordeaux:#1C6FB8;--blob-amber:#38C7D9;--blob-purple:#2B3FA8;--blob-teal:#14A37F;
   --tint:#7FE3FF;--bar:rgba(6,20,31,.4);--sw-bg:rgba(14,36,56,.94);--badge-ring:rgba(6,20,31,.85);--plus-glow:rgba(56,199,217,.42);
@@ -841,6 +849,14 @@ html[data-skin="clean"] .search{background:var(--cell);box-shadow:var(--shadow)}
 .flows.cardlines{flex-direction:column;gap:6px;margin-top:8px}
 .flows.cardlines:empty{display:none}
 .cardline .cn{flex:1}
+
+.cerow{gap:8px;padding-inline-end:8px}
+.cename{flex:1;min-width:0;border:0;background:none;text-align:right;color:var(--label);font:inherit;display:flex;flex-direction:column;gap:2px;padding:4px 0}
+.cename .t2{font-size:13px;color:var(--label2)}
+.ceord{display:flex;gap:2px;flex:none}
+.ceord button{width:34px;height:34px;border:0;border-radius:10px;background:var(--fill);color:var(--tint);display:grid;place-items:center}
+.ceord button:disabled{color:var(--label3);opacity:.5}
+.ceord svg{width:16px;height:16px;stroke-width:2.4}
 
 /* ===== "clean" skin: digital-bank look on top of the classic sheet ===== */
 html[data-skin="clean"]{--bg:#F3F5F9;--cell:#FFFFFF;--sheet:#F3F5F9;--sheet-cell:#FFFFFF;
@@ -1303,7 +1319,7 @@ window.__kisLook=(function(){
       <p class="sf" id="backupInfo"></p>
       <input type="file" id="restoreFile" accept=".json,application/json" hidden>
     </div>
-    <p class="hintline">גרסה 33</p>
+    <p class="hintline">גרסה 34</p>
   </section>
 </main>
 
@@ -1440,6 +1456,7 @@ window.__kisLook=(function(){
         <div class="cell withicon"><span class="sq b-inv" data-ic="inv"></span><span class="grow"><span class="t1">השקעות שנצברו</span><span class="t2" id="a-invUsdRow" hidden>מתוכן <span class="num" id="a-invUsd"></span></span></span><span class="amt num" id="a-inv">0.00</span></div>
       </div>
       <section class="sec" id="accSec" hidden><h2 class="sh" id="accTitle">צבירה כוללת לפי קטגוריה</h2><div class="group" id="accs"></div></section>
+      <div class="group"><button type="button" class="cell tint center" id="catEditBtn">עריכת הסעיפים: שם, איחוד, מחיקה וסדר</button></div>
     </div>
   </div></div>
 </div>
@@ -1514,6 +1531,7 @@ window.__kisLook=(function(){
       <h2 class="sh" id="dbPayHead">החזרים</h2>
       <div class="group">
         <div class="cell"><span class="lbl">החזר</span><input class="text num" id="dbPayAmt" inputmode="decimal" placeholder="סכום" autocomplete="off"><button type="button" class="navtext trail" id="dbPayAdd">רישום</button></div>
+        <label class="cell"><span class="lbl grow" id="dbPayAcctL">הכסף נכנס ל־</span><select class="sel" id="dbPayAcct"></select></label>
         <button type="button" class="cell tint center" id="dbPayAll">הוחזר הכול</button>
       </div>
       <div class="group" id="dbPays"></div>
@@ -1588,6 +1606,25 @@ window.__kisLook=(function(){
   </div></div>
 </div>
 
+<!-- edit savings / investment categories -->
+<div class="sheet" id="catSheet" hidden role="dialog" aria-modal="true" aria-labelledby="ceTitle">
+  <div class="grabber"></div>
+  <div class="sheetnav gut"><button type="button" class="navtext" id="ceBack" hidden><svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>חזרה</button><h3 id="ceTitle">עריכת סעיפים</h3><button type="button" class="navtext trail" id="ceDone" data-close>סיום</button></div>
+  <div class="sheetbody gut"><div class="inner">
+    <div id="ceList">
+      <div class="seg" id="ceSeg"><button type="button" data-k="sav">חיסכון</button><button type="button" data-k="inv">השקעות</button></div>
+      <div class="group" id="ceRows" style="margin-top:16px"></div>
+      <div class="group" style="margin-top:16px"><button type="button" class="cell tint" id="ceAdd"><svg class="i" viewBox="0 0 24 24" style="width:20px;height:20px"><path d="M12 5v14M5 12h14"/></svg>הוספת סעיף</button></div>
+      <p class="sf" style="margin-top:8px">החצים משנים את הסדר. לחיצה על סעיף פותחת שינוי שם, איחוד עם סעיף אחר או מחיקה. שינוי חל על כל התנועות והקבועות של הסעיף.</p>
+    </div>
+    <div id="ceEdit" hidden>
+      <div class="group"><label class="cell"><span class="lbl">שם</span><input class="text" id="ceName" autocomplete="off"></label></div>
+      <p class="errline" id="ceErr" hidden></p>
+      <div class="group" style="margin-top:16px"><button type="button" class="cell tint center" id="ceSave">שמירה</button></div>
+    </div>
+  </div></div>
+</div>
+
 <!-- action sheet -->
 <div class="scrim2" id="scrim2" hidden></div>
 <div class="actionsheet" id="as" hidden role="alertdialog" aria-modal="true" aria-labelledby="asTitle">
@@ -1610,6 +1647,9 @@ const KINDS={
   maa:{label:"מעשר",plural:"מעשרות",sign:"",cats:["צדקה","בית כנסת","תרומה לעמותה","עזרה למשפחה","תלמוד תורה","אחר"]}
 };
 const ORDER=["exp","inc","sav","inv","maa"];
+const LSK="kis-cats-v1";
+let catOv=(()=>{try{const v=JSON.parse(localStorage.getItem(LSK)||"{}");return v&&typeof v==="object"?v:{}}catch(e){return {}}})();
+Object.keys(catOv).forEach(k=>{if(KINDS[k]&&Array.isArray(catOv[k])&&catOv[k].length)KINDS[k].cats=catOv[k].map(String)});
 /* maaser rate: 10% (maaser) or 20% (chomesh). Each income keeps the rate that was set when it was recorded */
 let rate=0.1;try{if(localStorage.getItem("kis-maaser-rate")==="0.2")rate=0.2}catch(e){}
 const rateOf=t=>t.mr===0.2?0.2:0.1;
@@ -1660,6 +1700,8 @@ function balancesAt(upto,withPlan){
   const bal={};accts.forEach(a=>bal[a.id]=+a.open||0);
   let fl=[];txs.forEach(t=>{fl=fl.concat(flowsOf(t))});
   if(withPlan)plannedUpTo(upto.slice(0,7)).forEach(t=>{fl=fl.concat(flowsOf(t))});
+  /* a debt repayment is not income or expense, but the money does arrive in (or leave) an account */
+  if(typeof debts!=="undefined")debts.forEach(d=>(d.pays||[]).forEach(p=>{if(p.acct&&p.date)fl.push({a:p.acct,d:p.date,v:d.dir==="owe"?-p.amount:p.amount})}));
   fl=fl.filter(f=>(!START||f.d>=START)&&f.d<=upto&&bal[f.a]!==undefined).sort((x,y)=>x.d.localeCompare(y.d)||y.v-x.v);
   const bitId=walletOf("bit"),src=mainBank();
   fl.forEach(f=>{
@@ -1897,8 +1939,8 @@ function render(){
   const accs=$("accs");accs.innerHTML="";let anyAcc=false;
   ["sav","inv"].forEach(k=>{
     const by={},byUsd={};upTo.filter(t=>t.kind===k).forEach(t=>{by[t.cat]=(by[t.cat]||0)+t.amount;if(t.usd)byUsd[t.cat]=(byUsd[t.cat]||0)+t.usd});
-    Object.entries(by).sort((a,b)=>b[1]-a[1]).forEach(([c,v])=>{anyAcc=true;
-      const el=document.createElement("div");el.className="cell";
+    const ord=KINDS[k].cats;Object.entries(by).sort((a,b)=>(ord.indexOf(a[0])+1||99)-(ord.indexOf(b[0])+1||99)||b[1]-a[1]).forEach(([c,v])=>{anyAcc=true;
+      const el=document.createElement("button");el.type="button";el.className="cell";el.onclick=()=>{ceKind=k;renderCe();openSheet("catSheet");setTimeout(()=>catActions(c),300)};
       el.innerHTML='<span class="dot b-'+k+'"></span><span class="grow"><span class="t1"></span><span class="t2"></span></span><span class="amt num"></span>';
       el.querySelector(".t1").textContent=c;el.querySelector(".t2").textContent=KINDS[k].plural+(byUsd[c]?" · מתוכם "+usdText(byUsd[c]):"");el.querySelector(".amt").textContent=money(v);
       accs.appendChild(el)});
@@ -2004,7 +2046,7 @@ function render(){
 }
 
 /* ---------- sheets ---------- */
-const SHEETS=["sheet","recSheet","panelSheet","lifeSheet","tdSheet","dbSheet","cardSheet","trfSheet","impSheet"];
+const SHEETS=["sheet","recSheet","panelSheet","lifeSheet","tdSheet","dbSheet","cardSheet","trfSheet","impSheet","catSheet"];
 function openSheet(id){SHEETS.forEach(s=>$(s).hidden=s!==id);$("scrim").hidden=false;$("banner").hidden=true;document.body.style.overflow="hidden"}
 function closeSheets(){$("scrim").hidden=true;SHEETS.forEach(s=>$(s).hidden=true);document.body.style.overflow=""}
 document.querySelectorAll("[data-close]").forEach(b=>b.onclick=closeSheets);
@@ -2639,10 +2681,13 @@ function renderDebts(){
 function syncDebtDir(){setSeg($("dbDir"),"d",dbDir);$("dbNameLbl").textContent=dbDir==="owe"?"למי":"מי";$("dbName").placeholder=dbDir==="owe"?"למי אני חייב":"מי חייב לי"}
 function renderDebtPays(){
   const d=dbEdit,box=$("dbPays");box.innerHTML="";if(!d)return;
+  {const s2=$("dbPayAcct"),keep=s2.value;s2.innerHTML="";accts.forEach(a=>{const o=document.createElement("option");o.value=a.id;o.textContent=a.name;s2.appendChild(o)});
+   const none=document.createElement("option");none.value="";none.textContent="לא לרשום בחשבון";s2.appendChild(none);s2.value=keep&&[...s2.options].some(o=>o.value===keep)?keep:mainBank();
+   $("dbPayAcctL").textContent=d.dir==="owe"?"הכסף יצא מ־":"הכסף נכנס ל־"}
   const left=leftOf(d);$("dbPayHead").textContent="החזרים · נשאר "+money(left)+" מתוך "+money(d.amount);
   $("dbPayAll").hidden=!left;$("dbPayAll").textContent="הוחזר הכול · "+money(left);
   box.hidden=!(d.pays||[]).length;
-  (d.pays||[]).slice().sort((a,b)=>b.date.localeCompare(a.date)).forEach(p=>{const r=plainRow({ic:"given",cls:"b-gray",t1:money(p.amount),t2:dShort(p.date),onclick:()=>actionSheet({title:"למחוק את ההחזר?",what:money(p.amount)+" · "+dShort(p.date),buttons:[{label:"מחיקת ההחזר",destructive:true,fn:()=>{d.pays=d.pays.filter(x=>x!==p);saveDebts();renderDebtPays();render()}}]})});box.appendChild(r)});
+  (d.pays||[]).slice().sort((a,b)=>b.date.localeCompare(a.date)).forEach(p=>{const r=plainRow({ic:"given",cls:"b-gray",t1:money(p.amount),t2:dShort(p.date)+(p.acct?" · "+(d.dir==="owe"?"מ":"ל")+acctName(p.acct):""),onclick:()=>actionSheet({title:"למחוק את ההחזר?",what:money(p.amount)+" · "+dShort(p.date),buttons:[{label:"מחיקת ההחזר",destructive:true,fn:()=>{d.pays=d.pays.filter(x=>x!==p);saveDebts();renderDebtPays();render()}}]})});box.appendChild(r)});
 }
 function openDebt(d,dir){
   dbEdit=d||null;dbDir=d?d.dir:(dir||"owed");syncDebtDir();
@@ -2663,7 +2708,7 @@ $("dbSave").onclick=()=>{
   if(!saveDebts())return err("השמירה לא הצליחה.");closeSheets();render();banner(dbEdit?"נשמר":"החוב נוסף");
 };
 function addDebtPay(a){const d=dbEdit;if(!d)return;const left=leftOf(d);a=Math.min(Math.round(a*100)/100,left);if(!(a>0))return;
-  d.pays=d.pays||[];d.pays.push({amount:a,date:todayStr()});saveDebts();$("dbPayAmt").value="";renderDebtPays();render();
+  const ac=$("dbPayAcct").value;d.pays=d.pays||[];d.pays.push(Object.assign({amount:a,date:todayStr()},ac?{acct:ac}:{}));saveDebts();$("dbPayAmt").value="";renderDebtPays();render();
   banner(leftOf(d)?"נרשם החזר של "+money(a)+" · נשאר "+money(leftOf(d)):"החוב נסגר")}
 $("dbPayAdd").onclick=()=>{const a=parseNum($("dbPayAmt").value);if(!(a>0)){$("dbErr").textContent="הזינו את סכום ההחזר.";$("dbErr").hidden=false;return}addDebtPay(a)};
 $("dbPayAll").onclick=()=>{if(dbEdit)addDebtPay(leftOf(dbEdit))};
@@ -2883,6 +2928,42 @@ $("imAdd").onclick=()=>{const P=impPlan;if(!P||!P.add.length)return;const c=P.ca
     }else{txs.push({id:uid(),kind:r.kind,amount:Math.round(r.charge*100)/100,cat:r.cat,pay:"credit",inst:null,note:r.name,date:r.date,created:Date.now()+n,card:c.id});n++}
   });
   save();closeSheets();render();banner("נוספו "+P.add.length+" עסקאות מהפירוט",snap)};
+
+/* ---------- edit savings / investment categories: rename, merge, delete, order ---------- */
+let ceKind="sav",ceTarget=null;
+function catsUsed(k){const l=KINDS[k].cats.slice();txs.concat(recs).forEach(t=>{if(t.kind===k&&t.cat&&!l.includes(t.cat))l.push(t.cat)});return l}
+function saveCats(k,list){KINDS[k].cats=list;catOv[k]=list;try{localStorage.setItem(LSK,JSON.stringify(catOv))}catch(e){}}
+function moveCat(k,from,to){txs.forEach(t=>{if(t.kind===k&&t.cat===from)t.cat=to});recs.forEach(r=>{if(r.kind===k&&r.cat===from)r.cat=to});save()}
+function renderCe(){
+  setSeg($("ceSeg"),"k",ceKind);$("ceList").hidden=false;$("ceEdit").hidden=true;$("ceBack").hidden=true;$("ceTitle").textContent="עריכת סעיפים";
+  const list=catsUsed(ceKind),box=$("ceRows");box.innerHTML="";
+  list.forEach((c,i)=>{const tot=sum(txs.filter(t=>t.kind===ceKind&&t.cat===c)),n=txs.filter(t=>t.kind===ceKind&&t.cat===c).length;
+    const r=document.createElement("div");r.className="cell cerow";
+    r.innerHTML='<button type="button" class="cename"><span class="t1"></span><span class="t2"></span></button><span class="amt num"></span><span class="ceord"><button type="button" class="ceup" aria-label="למעלה"><svg class="i" viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg></button><button type="button" class="cedn" aria-label="למטה"><svg class="i" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></span>';
+    r.querySelector(".t1").textContent=c;r.querySelector(".t2").textContent=n?n+" תנועות":"ריק";r.querySelector(".amt").textContent=money(tot);
+    r.querySelector(".ceup").disabled=i===0;r.querySelector(".cedn").disabled=i===list.length-1;
+    r.querySelector(".ceup").onclick=()=>{const l=catsUsed(ceKind);[l[i-1],l[i]]=[l[i],l[i-1]];saveCats(ceKind,l);renderCe();render()};
+    r.querySelector(".cedn").onclick=()=>{const l=catsUsed(ceKind);[l[i+1],l[i]]=[l[i],l[i+1]];saveCats(ceKind,l);renderCe();render()};
+    r.querySelector(".cename").onclick=()=>catActions(c);
+    box.appendChild(r)});
+}
+function catActions(c){
+  const others=catsUsed(ceKind).filter(x=>x!==c),n=txs.filter(t=>t.kind===ceKind&&t.cat===c).length+recs.filter(r=>r.kind===ceKind&&r.cat===c).length;
+  actionSheet({title:c,what:n?n+" תנועות וקבועות":"אין תנועות בסעיף",buttons:[
+    {label:"שינוי שם",fn:()=>openCeEdit(c)},
+    {label:"איחוד לתוך סעיף אחר",fn:()=>setTimeout(()=>actionSheet({title:"לאחד את "+c+" לתוך…",msg:"כל התנועות והקבועות של "+c+" יעברו לסעיף שתבחרו, והסעיף "+c+" יימחק.",
+      buttons:others.map(o=>({label:o,fn:()=>{const snap=snapshot(),old=KINDS[ceKind].cats.slice();moveCat(ceKind,c,o);saveCats(ceKind,catsUsed(ceKind).filter(x=>x!==c));renderCe();render();banner(c+" אוחד לתוך "+o,snap)}}))}),250)},
+    {label:"מחיקה",destructive:true,fn:()=>{if(!n){saveCats(ceKind,catsUsed(ceKind).filter(x=>x!==c));renderCe();render();banner("הסעיף נמחק");return}
+      setTimeout(()=>actionSheet({title:"בסעיף יש תנועות",msg:"לאן להעביר אותן לפני המחיקה?",buttons:others.map(o=>({label:"העברה ל"+o+" ומחיקה",destructive:true,fn:()=>{const snap=snapshot();moveCat(ceKind,c,o);saveCats(ceKind,catsUsed(ceKind).filter(x=>x!==c));renderCe();render();banner("הסעיף נמחק, התנועות עברו ל"+o,snap)}}))}),250)}}]});
+}
+function openCeEdit(c){ceTarget=c;$("ceList").hidden=true;$("ceEdit").hidden=false;$("ceBack").hidden=false;$("ceTitle").textContent=c?"שינוי שם":"סעיף חדש";$("ceName").value=c||"";$("ceErr").hidden=true;setTimeout(()=>$("ceName").focus(),200)}
+$("catEditBtn").onclick=()=>{ceKind="sav";renderCe();openSheet("catSheet")};
+document.querySelectorAll("#ceSeg button").forEach(b=>b.onclick=()=>{ceKind=b.dataset.k;renderCe()});
+$("ceBack").onclick=renderCe;$("ceAdd").onclick=()=>openCeEdit(null);
+$("ceSave").onclick=()=>{const v=$("ceName").value.trim(),err=m=>{$("ceErr").textContent=m;$("ceErr").hidden=false};
+  if(!v)return err("כתבו שם.");const l=catsUsed(ceKind);if(v!==ceTarget&&l.includes(v))return err("כבר יש סעיף בשם הזה. אפשר לאחד אליו מהרשימה.");
+  if(ceTarget){moveCat(ceKind,ceTarget,v);saveCats(ceKind,l.map(x=>x===ceTarget?v:x))}else saveCats(ceKind,l.concat(v));
+  renderCe();render();banner(ceTarget?"השם עודכן":"הסעיף נוסף")};
 /* ---------- cash flow forecast ---------- */
 function monthsAhead(n){const out=[];let y=+todayStr().slice(0,4),m=+todayStr().slice(5,7);for(let i=0;i<n;i++){out.push(y+"-"+pad(m));m++;if(m>12){m=1;y++}}return out}
 function flowOf(mk){
@@ -3139,7 +3220,7 @@ $("restoreFile").onchange=async e=>{
       amount:+x.amount>0?+x.amount:0,freq:x.freq==="y"?"y":"m",date:/^\d{4}-\d{2}-\d{2}$/.test(x.date)?x.date:"",remind:+x.remind||30,note:String(x.note||""),src:x.src?String(x.src):undefined}));
     actionSheet({title:"לשחזר מהגיבוי?",what:clean.length+" תנועות · "+rl.length+" קבועות"+(ll.length?" · "+ll.length+" ביטוחים, מנויים ותזכורות":"")+(d.exported?" · "+new Date(d.exported).toLocaleDateString("he-IL"):""),
       msg:"השחזור יחליף את "+txs.length+" התנועות שנמצאות עכשיו בטלפון.",
-      buttons:[{label:"שחזור והחלפה",destructive:true,fn:()=>{txs=clean.concat(trfs);recs=rl;if(Array.isArray(d.accts)&&d.accts.length){accts=d.accts.filter(a=>a&&a.id&&a.name).map(a=>({id:String(a.id),name:String(a.name),type:["bank","cash","bit"].includes(a.type)?a.type:"bank",open:+a.open||0}));START=/^\d{4}-\d{2}-\d{2}$/.test(d.start)?d.start:"";saveAccts()}if(Array.isArray(d.life)){life=ll;saveLife()}if(Array.isArray(d.cards)&&d.cards.length){cards=d.cards.filter(c=>c&&c.id).map(c=>({id:String(c.id),name:String(c.name||"כרטיס"),last4:String(c.last4||"").replace(/\D/g,"").slice(0,4),type:c.type==="direct"?"direct":"credit",day:Math.min(28,Math.max(1,+c.day||2)),color:CCOL[c.color]?c.color:"blue",img:typeof c.img==="string"&&c.img.startsWith("data:image/")?c.img:"",acct:c.acct?String(c.acct):undefined}));saveCards()}if(Array.isArray(d.debts)){const ok=x=>/^\d{4}-\d{2}-\d{2}$/.test(x)?x:"";debts=d.debts.filter(x=>x&&x.name&&+x.amount>0).map(x=>({id:String(x.id||uid()),created:+x.created||Date.now(),dir:x.dir==="owe"?"owe":"owed",amount:+x.amount,name:String(x.name),phone:String(x.phone||""),note:String(x.note||""),date:ok(x.date),due:ok(x.due),pays:(Array.isArray(x.pays)?x.pays:[]).filter(p=>p&&+p.amount>0).map(p=>({amount:+p.amount,date:ok(p.date)||todayStr()}))}));saveDebts()}if(Array.isArray(d.pending)){pend=d.pending.filter(x=>x&&x.name).map(x=>({id:String(x.id||uid()),created:+x.created||Date.now(),name:String(x.name),amount:+x.amount>0?+x.amount:0,cat:String(x.cat||"אחר"),pri:[1,2,3].includes(+x.pri)?+x.pri:2,date:/^\d{4}-\d{2}-\d{2}$/.test(x.date)?x.date:"",note:String(x.note||"")}));savePend()}if(d.rate===0.2||d.rate===0.1)setRate(d.rate);save();genRecurring(true);render();banner("השחזור הושלם: "+txs.length+" תנועות")}}]});
+      buttons:[{label:"שחזור והחלפה",destructive:true,fn:()=>{txs=clean.concat(trfs);recs=rl;if(Array.isArray(d.accts)&&d.accts.length){accts=d.accts.filter(a=>a&&a.id&&a.name).map(a=>({id:String(a.id),name:String(a.name),type:["bank","cash","bit"].includes(a.type)?a.type:"bank",open:+a.open||0}));START=/^\d{4}-\d{2}-\d{2}$/.test(d.start)?d.start:"";saveAccts()}if(Array.isArray(d.life)){life=ll;saveLife()}if(Array.isArray(d.cards)&&d.cards.length){cards=d.cards.filter(c=>c&&c.id).map(c=>({id:String(c.id),name:String(c.name||"כרטיס"),last4:String(c.last4||"").replace(/\D/g,"").slice(0,4),type:c.type==="direct"?"direct":"credit",day:Math.min(28,Math.max(1,+c.day||2)),color:CCOL[c.color]?c.color:"blue",img:typeof c.img==="string"&&c.img.startsWith("data:image/")?c.img:"",acct:c.acct?String(c.acct):undefined}));saveCards()}if(Array.isArray(d.debts)){const ok=x=>/^\d{4}-\d{2}-\d{2}$/.test(x)?x:"";debts=d.debts.filter(x=>x&&x.name&&+x.amount>0).map(x=>({id:String(x.id||uid()),created:+x.created||Date.now(),dir:x.dir==="owe"?"owe":"owed",amount:+x.amount,name:String(x.name),phone:String(x.phone||""),note:String(x.note||""),date:ok(x.date),due:ok(x.due),pays:(Array.isArray(x.pays)?x.pays:[]).filter(p=>p&&+p.amount>0).map(p=>Object.assign({amount:+p.amount,date:ok(p.date)||todayStr()},p.acct?{acct:String(p.acct)}:{}))}));saveDebts()}if(Array.isArray(d.pending)){pend=d.pending.filter(x=>x&&x.name).map(x=>({id:String(x.id||uid()),created:+x.created||Date.now(),name:String(x.name),amount:+x.amount>0?+x.amount:0,cat:String(x.cat||"אחר"),pri:[1,2,3].includes(+x.pri)?+x.pri:2,date:/^\d{4}-\d{2}-\d{2}$/.test(x.date)?x.date:"",note:String(x.note||"")}));savePend()}if(d.rate===0.2||d.rate===0.1)setRate(d.rate);save();genRecurring(true);render();banner("השחזור הושלם: "+txs.length+" תנועות")}}]});
   }catch(err){banner("הקובץ הזה הוא לא גיבוי של הכיס החודשי")}
 };
 
