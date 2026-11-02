@@ -397,6 +397,10 @@ button.barrow:active{background:var(--fill-press)}
 .quick.four{justify-content:space-between;overflow:visible}
 .quick.four .qa{flex:1;width:auto}
 
+.flows.cardlines{flex-direction:column;gap:6px;margin-top:8px}
+.flows.cardlines:empty{display:none}
+.cardline .cn{flex:1}
+
 /* ===== theme presets: html[data-skin] picks colors; the glass level sliders set --glass, --glass-strong, --sheet-cell, --ov and --glass-blur inline on <html> ===== */
 html[data-skin="ocean"]{--bg:#06141F;--blob-bordeaux:#1C6FB8;--blob-amber:#38C7D9;--blob-purple:#2B3FA8;--blob-teal:#14A37F;
   --tint:#7FE3FF;--bar:rgba(6,20,31,.4);--sw-bg:rgba(14,36,56,.94);--badge-ring:rgba(6,20,31,.85);--plus-glow:rgba(56,199,217,.42);
@@ -834,6 +838,10 @@ html[data-skin="clean"] .search{background:var(--cell);box-shadow:var(--shadow)}
 .quick.four{justify-content:space-between;overflow:visible}
 .quick.four .qa{flex:1;width:auto}
 
+.flows.cardlines{flex-direction:column;gap:6px;margin-top:8px}
+.flows.cardlines:empty{display:none}
+.cardline .cn{flex:1}
+
 /* ===== "clean" skin: digital-bank look on top of the classic sheet ===== */
 html[data-skin="clean"]{--bg:#F3F5F9;--cell:#FFFFFF;--sheet:#F3F5F9;--sheet-cell:#FFFFFF;
   --label:#0F172A;--label2:rgba(15,23,42,.58);--label3:rgba(15,23,42,.32);--sep:rgba(15,23,42,.08);--fill:rgba(15,23,42,.05);--fill-press:rgba(15,23,42,.05);
@@ -952,8 +960,9 @@ window.__kisLook=(function(){
       <div class="bbdet" id="balDet" hidden>
         <div class="flows">
           <span class="fl"><span class="fa up">▲</span>הכנסות <b class="num" id="t-inc">0.00</b></span>
-          <span class="fl"><span class="fa down">▼</span>הוצאות <b class="num" id="t-exp">0.00</b></span>
+          <span class="fl"><span class="fa down">▼</span>הוצאות אחרות <b class="num" id="t-exp">0.00</b></span>
         </div>
+        <div class="flows cardlines" id="balCards"></div>
         <div class="flows sm">
           <span class="fl">חיסכון <b class="num" id="t-sav">0.00</b></span>
           <span class="fl">השקעות <b class="num" id="t-inv">0.00</b></span>
@@ -1294,7 +1303,7 @@ window.__kisLook=(function(){
       <p class="sf" id="backupInfo"></p>
       <input type="file" id="restoreFile" accept=".json,application/json" hidden>
     </div>
-    <p class="hintline">גרסה 32</p>
+    <p class="hintline">גרסה 33</p>
   </section>
 </main>
 
@@ -1845,7 +1854,14 @@ function render(){
   const mk=monthKey();
   const items=txs.filter(t=>t.date&&t.date.slice(0,7)===mk);
   const BI=balItems(mk),bItems=BI.rec;
-  const tot={};ORDER.forEach(k=>{tot[k]=sum(bItems.filter(t=>t.kind===k));$("t-"+k).textContent=money(tot[k])});
+  /* the month's breakdown: what went through a credit card shows as one charge line per card, not split into categories */
+  const onCard=t=>t.kind!=="inc"&&(isCC(t)||t.pay==="inst"&&cardOf(t).type!=="direct");
+  const tot={};ORDER.forEach(k=>{tot[k]=sum(bItems.filter(t=>t.kind===k&&!onCard(t)));$("t-"+k).textContent=money(tot[k])});
+  {const box=$("balCards");box.innerHTML="";
+   cards.filter(c=>c.type!=="direct").forEach(c=>{const l=bItems.filter(t=>onCard(t)&&cardOf(t).id===c.id);if(!l.length)return;
+     const d=+c.day||ccDay,date=mk+"-"+pad(d),pm=new Date(+prevMk(mk).slice(0,4),+prevMk(mk).slice(5,7)-1,1).toLocaleDateString("he-IL",{month:"long"});
+     const r=document.createElement("div");r.className="fl cardline";r.innerHTML='<span class="fa down">▼</span><span class="cn"></span><b class="num"></b>';
+     r.querySelector(".cn").textContent=(date<=todayStr()?"חיוב ":"צפוי חיוב ")+c.name+" "+pad(d)+"."+mk.slice(5,7)+" (קניות "+pm+")";r.querySelector("b").textContent=money(sum(l));box.appendChild(r)})}
   const due=dueOf(bItems);
   const pendC=bItems.reduce((s,t)=>s+commDue(t),0);
   const bal=tot.inc-tot.exp-tot.sav-tot.inv-Math.max(due,tot.maa)-pendC;
@@ -2669,7 +2685,9 @@ function cardFace(el,c,bill){
   el.innerHTML='<div class="cctop"><span class="ccname"></span><span class="cctype"></span></div><div class="ccchip"></div><div class="ccbot"><span class="ccnum num"></span><span class="ccbill"><span class="cbl"></span><b class="num"></b></span></div>';
   el.querySelector(".ccname").textContent=c.name||"כרטיס";el.querySelector(".cctype").textContent=c.type==="direct"?"דיירקט":"אשראי";
   el.querySelector(".ccnum").textContent="•••• "+(c.last4||"····");
-  if(bill){el.querySelector(".cbl").textContent=c.type==="direct"?"החודש":"חיוב ב־"+dShort(bill.date).slice(0,5);el.querySelector(".ccbill b").textContent=money(bill.total)}
+  if(bill){if(c.type==="direct"){const done=sum(bill.list.filter(t=>!t.planned&&t.date<=todayStr())),rest=bill.total-done;
+      el.querySelector(".cbl").textContent=rest>0.004?"ירד החודש · עוד צפוי "+money(rest):"ירד החודש";el.querySelector(".ccbill b").textContent=money(done)}
+    else{el.querySelector(".cbl").textContent=(bill.date<=todayStr()?"חויב ב־":"צפוי לחיוב ב־")+dShort(bill.date).slice(0,5);el.querySelector(".ccbill b").textContent=money(bill.total)}}
   else el.querySelector(".ccbill").hidden=true;
 }
 function renderCards(){
